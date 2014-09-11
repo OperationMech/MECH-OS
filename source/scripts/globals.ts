@@ -12,8 +12,8 @@
 // Global "CONSTANTS" (There is currently no const or final or readonly type annotation in TypeScript.)
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
-var APP_NAME: string    = "TSOS";   // 'cause Bob and I were at a loss for a better name.
-var APP_VERSION: string = "0.07";   // What did you expect?
+var APP_NAME: string    = "MECH-OS";   // 'cause Bob and I were at a loss for a better name.
+var APP_VERSION: string = "0.08(007)"; // What did you expect?
 
 var CPU_CLOCK_INTERVAL: number = 100;   // This is in ms, or milliseconds, so 1000 = 1 second.
 
@@ -33,7 +33,7 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 
 var _Canvas: HTMLCanvasElement = null;  // Initialized in hostInit().
 var _DrawingContext = null;             // Initialized in hostInit().
-var _DefaultFontFamily = "sans";        // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
+var _DefaultFontFamily = "system";    // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;              // Additional space added to font size when advancing a line.
 

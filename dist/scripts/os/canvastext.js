@@ -49,8 +49,8 @@ var TSOS;
 
             ctx.save();
             ctx.lineCap = "round";
-            ctx.lineWidth = 2.0 * mag;
-            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2.8 * mag; // slightly thicker lines 2.0 -> 2.8
+            ctx.strokeStyle = "green"; // changed color
 
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));
