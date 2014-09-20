@@ -51,6 +51,12 @@ module TSOS {
                                   "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                  "date",
+                                  "- Displays the current time in UTC date format.");
+            this.commandList[this.commandList.length] = sc;
+
             // man <topic>
             sc = new ShellCommand(this.shellMan,
                                   "man",
@@ -73,6 +79,12 @@ module TSOS {
             sc = new ShellCommand(this.shellPrompt,
                                   "prompt",
                                   "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                                  "whereami",
+                                  "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
 
             // processes - list the running processes and their IDs
@@ -222,6 +234,11 @@ module TSOS {
             _StdOut.resetXY();
         }
 
+        public shellDate(args) {
+            var currentTime: Date = new Date(Date.now());
+            _StdOut.putText("Current time: " + currentTime.toUTCString() + ".");
+        }
+
         public shellMan(args) {
             if (args.length > 0) {
                 var topic = args[0];
@@ -277,6 +294,10 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+
+        public shellWhereAmI(args) {
+            _StdOut.putText("You are at: " + window.location.host.valueOf());
         }
 
     }
