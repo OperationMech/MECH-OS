@@ -87,6 +87,12 @@ module TSOS {
                                   "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
 
+            // bios
+            sc = new ShellCommand(this.shellOverrideClockspeed,
+                                  "overclock",
+                                  "<low | normal | fast> - Sets the clockspeed; normal is default.");
+            this.commandList[this.commandList.length] = sc;
+
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -272,7 +278,7 @@ module TSOS {
                         _StdOut.putText("Trace OFF");
                         break;
                     default:
-                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
+                        _StdOut.putText("Invalid argument.  Usage: trace <on | off>.");
                 }
             } else {
                 _StdOut.putText("Usage: trace <on | off>");
@@ -298,6 +304,34 @@ module TSOS {
 
         public shellWhereAmI(args) {
             _StdOut.putText("You are at: " + window.location.host.valueOf());
+        }
+
+        public shellOverrideClockspeed (args) {
+            if(args.length > 0) {
+               var clockspeed = args[0];
+               switch(clockspeed) {
+                   case "high":
+                      CPU_CLOCK_INTERVAL = 8;
+                      clearInterval(_hardwareClockID);
+                      _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                      break;
+                   case "normal":
+                      CPU_CLOCK_INTERVAL = 100;
+                      clearInterval(_hardwareClockID);
+                      _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                      break;
+                   case "low":
+                      CPU_CLOCK_INTERVAL = 1000;
+                      clearInterval(_hardwareClockID);
+                      _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                      break;
+                   default:
+                      _StdOut.putText("Invalid argument. Usage: overclock <low | normal | high>.");
+                      break;
+               }
+            } else {
+                _StdOut.putText("Usage: overclock <low | normal | high>.");
+            }
         }
 
     }
