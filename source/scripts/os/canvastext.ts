@@ -141,7 +141,7 @@ module TSOS {
             return total;
         }
 
-        public static draw(ctx, font, size, x, y, str) {
+        public static draw(ctx, font, size, x, y, str, remove = false) {
             var total = 0;
             var len = str.length;
             var mag = size / 25.0;
@@ -149,7 +149,12 @@ module TSOS {
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.8 * mag; // slightly thicker lines 2.0 -> 2.8
-            ctx.strokeStyle = "green"; // changed color
+            if (!remove) {
+                ctx.strokeStyle = "green"; // changed color
+            } else {
+                ctx.strokeStyle = "black"; // removal color
+                ctx.lineWidth = 5.0 * mag; // even thicker lines for removal 2.0 -> 5.0
+            }
 
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));
@@ -181,6 +186,7 @@ module TSOS {
 
         public static enable(ctx) {
             ctx.drawText = function(font,size,x,y,text) { return CanvasTextFunctions.draw( ctx, font,size,x,y,text); };
+            ctx.drawText = function(font,size,x,y,text,remove) { return CanvasTextFunctions.draw( ctx, font,size,x,y,text,remove); };
             ctx.measureText = function(font,size,text) { return CanvasTextFunctions.measure( font,size,text); };
             ctx.fontAscent = function(font,size) { return CanvasTextFunctions.ascent(font,size); };
             ctx.fontDescent = function(font,size) { return CanvasTextFunctions.descent(font,size); };
