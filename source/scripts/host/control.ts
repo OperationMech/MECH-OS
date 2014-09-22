@@ -67,7 +67,7 @@ module TSOS {
 
             // Update the log console.
             var taLog = <HTMLDivElement> document.getElementById("taHostLog");
-            taLog.innerHTML = str + taLog.innerHTML;
+            taLog.innerHTML = str;
             // Optionally update a log database or some streaming service.
         }
 

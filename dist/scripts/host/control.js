@@ -62,7 +62,7 @@ var TSOS;
 
             // Update the log console.
             var taLog = document.getElementById("taHostLog");
-            taLog.innerHTML = str + taLog.innerHTML;
+            taLog.innerHTML = str;
             // Optionally update a log database or some streaming service.
         };
 
