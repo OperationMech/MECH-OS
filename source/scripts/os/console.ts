@@ -17,7 +17,9 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public buffer = "") {
+                    public buffer = "",
+                    public cmdBufferPos = 0,
+                    public cmdBuffer = []) {
 
         }
 
@@ -39,11 +41,28 @@ module TSOS {
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
+                // Retrieve previous entered commands.
+                var pos = this.cmdBufferPos;
+                var cmdBufferSize = this.cmdBuffer.length;
+                if((chr === "↓" && pos >= 1) ||
+                   (chr === "↑" && pos < cmdBufferSize)) {
+                    if(chr === "↑" && pos < cmdBufferSize ){
+                        this.cmdBufferPos -= 1;
+                        this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                    } else if(pos < cmdBufferSize) {
+                        this.cmdBufferPos += 1;
+                        this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                    } else {
+                        this.buffer = this.cmdBuffer[cmdBufferSize];
+                    }
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
-                if (chr === String.fromCharCode(13)) { //     Enter key
+                } else if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
+                    this.cmdBuffer[this.cmdBuffer.length] = this.buffer;
+                    this.cmdBuffer.length += 1;
+                    this.cmdBufferPos +=1;
                     // ... and reset our buffer.
                     this.buffer = "";
                 } else if (chr === String.fromCharCode(8)){
@@ -55,7 +74,6 @@ module TSOS {
                         newBuffer += this.buffer[i];
                     }
                     this.buffer = newBuffer;
-
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...

@@ -306,7 +306,7 @@ var TSOS;
                         break;
                     default:
                         _StdOut.putText("Invalid argument. Usage: overclock <low | normal | high>.");
-                        brea;
+                        break;
                 }
             } else {
                 _StdOut.putText("Usage: overclock <low | normal | high>.");

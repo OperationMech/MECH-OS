@@ -32,21 +32,105 @@ var TSOS;
             _Kernel.krnTrace("Key code:" + keyCode + " shifted:" + isShifted);
             var chr = "";
 
+            // Check to see if caps was pressed.
+            if (keyCode == 20 && (this.status !== "capsOn")) {
+                this.status = "capsOn";
+            } else if (keyCode == 20 && (this.status === "capsOn")) {
+                this.status = "loaded";
+            }
+
             // Check to see if we even want to deal with the key that was pressed.
             if (((keyCode >= 65) && (keyCode <= 90)) || ((keyCode >= 97) && (keyCode <= 123))) {
                 // Determine the character we want to display.
                 // Assume it's lowercase...
                 chr = String.fromCharCode(keyCode + 32);
 
-                // ... then check the shift key and re-adjust if necessary.
-                if (isShifted) {
+                // ... then check the shift and caps key and re-adjust if necessary.
+                if ((isShifted && (this.status !== "capsOn")) || (!isShifted && (this.status === "capsOn"))) {
                     chr = String.fromCharCode(keyCode);
                 }
 
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
-            } else if (((keyCode >= 48) && (keyCode <= 57)) || (keyCode == 32) || (keyCode == 13) || (keyCode == 8)) {
-                chr = String.fromCharCode(keyCode);
+            } else if (((keyCode >= 219) && (keyCode <= 222)) || ((keyCode >= 48) && (keyCode <= 57)) || ((keyCode >= 190) && (keyCode <= 192)) || (keyCode == 188) || (keyCode == 173) || (keyCode == 61) || (keyCode == 59) || (keyCode == 38) || (keyCode == 40) || (keyCode == 32) || (keyCode == 13) || (keyCode == 8) || (keyCode == 9)) {
+                if (isShifted) {
+                    switch (keyCode) {
+                        case 48:
+                            chr = ")";
+                            break;
+                        case 49:
+                            chr = "!";
+                            break;
+                        case 50:
+                            chr = "@";
+                            break;
+                        case 51:
+                            chr = "#";
+                            break;
+                        case 52:
+                            chr = "$";
+                            break;
+                        case 53:
+                            chr = "%";
+                            break;
+                        case 54:
+                            chr = "^";
+                            break;
+                        case 55:
+                            chr = "&";
+                            break;
+                        case 56:
+                            chr = "*";
+                            break;
+                        case 57:
+                            chr = "(";
+                            break;
+                        case 59:
+                            chr = ":";
+                            break;
+                        case 61:
+                            chr = "+";
+                            break;
+                        case 173:
+                            chr = "_";
+                            break;
+                        case 188:
+                            chr = "<";
+                            break;
+                        case 190:
+                            chr = ">";
+                            break;
+                        case 191:
+                            chr = "?";
+                            break;
+                        case 192:
+                            chr = "~";
+                            break;
+                        case 219:
+                            chr = "{";
+                            break;
+                        case 220:
+                            chr = "|";
+                            break;
+                        case 221:
+                            chr = "}";
+                            break;
+                        case 222:
+                            chr = "\"";
+                            break;
+                        default:
+                            chr = String.fromCharCode(keyCode);
+                            break;
+                    }
+                } else {
+                    if (keyCode == 38) {
+                        chr = "↑";
+                    } else if (keyCode == 40) {
+                        chr = "↓";
+                    } else {
+                        chr = String.fromCharCode(keyCode);
+                    }
+                }
                 _KernelInputQueue.enqueue(chr);
             }
         };

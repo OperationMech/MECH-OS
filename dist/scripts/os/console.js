@@ -8,17 +8,21 @@ Note: This is not the Shell.  The Shell is the "command line interface" (CLI) or
 var TSOS;
 (function (TSOS) {
     var Console = (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, cmdBufferPos, cmdBuffer) {
             if (typeof currentFont === "undefined") { currentFont = _DefaultFontFamily; }
             if (typeof currentFontSize === "undefined") { currentFontSize = _DefaultFontSize; }
             if (typeof currentXPosition === "undefined") { currentXPosition = 0; }
             if (typeof currentYPosition === "undefined") { currentYPosition = _DefaultFontSize; }
             if (typeof buffer === "undefined") { buffer = ""; }
+            if (typeof cmdBufferPos === "undefined") { cmdBufferPos = 0; }
+            if (typeof cmdBuffer === "undefined") { cmdBuffer = []; }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
+            this.cmdBufferPos = cmdBufferPos;
+            this.cmdBuffer = cmdBuffer;
         }
         Console.prototype.init = function () {
             this.clearScreen();
@@ -39,11 +43,27 @@ var TSOS;
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
 
-                // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
-                if (chr === String.fromCharCode(13)) {
+                // Retrieve previous entered commands.
+                var pos = this.cmdBufferPos;
+                var cmdBufferSize = this.cmdBuffer.length;
+                if ((chr === "↓" && pos >= 1) || (chr === "↑" && pos < cmdBufferSize)) {
+                    if (chr === "↑" && pos < cmdBufferSize) {
+                        this.cmdBufferPos -= 1;
+                        this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                    } else if (pos < cmdBufferSize) {
+                        this.cmdBufferPos += 1;
+                        this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                    } else {
+                        this.buffer = this.cmdBuffer[cmdBufferSize];
+                    }
+                    // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
+                } else if (chr === String.fromCharCode(13)) {
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
+                    this.cmdBuffer[this.cmdBuffer.length] = this.buffer;
+                    this.cmdBuffer.length += 1;
+                    this.cmdBufferPos += 1;
 
                     // ... and reset our buffer.
                     this.buffer = "";
