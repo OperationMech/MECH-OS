@@ -15,6 +15,7 @@ var TSOS;
             this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
+            this.statusMessage = "";
         }
         Shell.prototype.init = function () {
             var sc = null;
@@ -61,8 +62,12 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
 
-            // bios
+            // override clockspeed
             sc = new TSOS.ShellCommand(this.shellOverrideClockspeed, "overclock", "<low | normal | fast> - Sets the clockspeed; normal is default.");
+            this.commandList[this.commandList.length] = sc;
+
+            // status
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Displays a status message in the host log.");
             this.commandList[this.commandList.length] = sc;
 
             // processes - list the running processes and their IDs
@@ -310,6 +315,15 @@ var TSOS;
                 }
             } else {
                 _StdOut.putText("Usage: overclock <low | normal | high>.");
+            }
+        };
+
+        Shell.prototype.shellStatus = function (args) {
+            if (args.length > 0) {
+                _OsShell.statusMessage = _OsShell.statusMessage + args[0] + " ";
+                _Kernel.krnTrace(_OsShell.statusMessage);
+            } else {
+                _StdOut.putText("Usage: status <string> Please supply a string.");
             }
         };
         return Shell;

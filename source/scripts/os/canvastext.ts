@@ -161,6 +161,13 @@ module TSOS {
                 if (!c) {
                     continue;
                 }
+                // Handle simple line wrap for printed out text
+                if(x > 780) {
+                    y +=  _DefaultFontSize +
+                          7.0* size/25 +
+                          _FontHeightMargin;
+                    x =+ x - x ;
+                }
                 ctx.beginPath();
                 var penUp = true;
                 var needStroke = 0;

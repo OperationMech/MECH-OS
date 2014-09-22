@@ -46,15 +46,18 @@ var TSOS;
                 // Retrieve previous entered commands.
                 var pos = this.cmdBufferPos;
                 var cmdBufferSize = this.cmdBuffer.length;
-                if ((chr === "↓" && pos >= 1) || (chr === "↑" && pos < cmdBufferSize)) {
-                    if (chr === "↑" && pos < cmdBufferSize) {
+                if (chr === "↓" || chr === "↑") {
+                    if (chr === "↑" && pos >= 0) {
                         this.cmdBufferPos -= 1;
                         this.buffer = this.cmdBuffer[this.cmdBufferPos];
-                    } else if (pos < cmdBufferSize) {
+                        this.putText(this.buffer);
+                    } else if (chr === "↓" && pos < cmdBufferSize) {
                         this.cmdBufferPos += 1;
                         this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                        this.putText(this.buffer);
                     } else {
-                        this.buffer = this.cmdBuffer[cmdBufferSize];
+                        this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                        this.putText(this.buffer);
                     }
                     // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 } else if (chr === String.fromCharCode(13)) {
@@ -63,7 +66,7 @@ var TSOS;
                     _OsShell.handleInput(this.buffer);
                     this.cmdBuffer[this.cmdBuffer.length] = this.buffer;
                     this.cmdBuffer.length += 1;
-                    this.cmdBufferPos += 1;
+                    this.cmdBufferPos = this.cmdBuffer.length;
 
                     // ... and reset our buffer.
                     this.buffer = "";
@@ -100,6 +103,11 @@ var TSOS;
                 // Draw the text at the current X and Y coordinates.
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
 
+                // Create a newline if an overflow is to occur
+                if (text.length > 80) {
+                    this.advanceLine();
+                }
+
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;
@@ -107,11 +115,7 @@ var TSOS;
         };
 
         Console.prototype.removeText = function (text) {
-            // My first inclination here was to write two functions: putChar() and putString().
-            // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
-            // between the two.  So rather than be like PHP and write two (or more) functions that
-            // do the same thing, thereby encouraging confusion and decreasing readability, I
-            // decided to write one function and use the term "text" to connote string or char.
+            // Changed result of putText
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             if (text !== "") {
                 // Move current X position.
@@ -132,7 +136,13 @@ var TSOS;
             * Font height margin is extra spacing between the lines.
             */
             this.currentYPosition += _DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) + _FontHeightMargin;
+
             // TODO: Handle scrolling. (Project 1)
+            // simple clear screen scrolling
+            if (this.currentYPosition > 600) {
+                this.clearScreen();
+                this.resetXY();
+            }
         };
         return Console;
     })();
