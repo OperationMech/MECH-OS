@@ -37,6 +37,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellCls, "cls", "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current time in UTC date format.");
+            this.commandList[this.commandList.length] = sc;
+
             // man <topic>
             sc = new TSOS.ShellCommand(this.shellMan, "man", "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
@@ -51,6 +55,14 @@ var TSOS;
 
             // prompt <string>
             sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            // bios
+            sc = new TSOS.ShellCommand(this.shellOverrideClockspeed, "overclock", "<low | normal | fast> - Sets the clockspeed; normal is default.");
             this.commandList[this.commandList.length] = sc;
 
             // processes - list the running processes and their IDs
@@ -207,6 +219,11 @@ var TSOS;
             _StdOut.resetXY();
         };
 
+        Shell.prototype.shellDate = function (args) {
+            var currentTime = new Date(Date.now());
+            _StdOut.putText("Current time: " + currentTime.toUTCString() + ".");
+        };
+
         Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
                 var topic = args[0];
@@ -240,7 +257,7 @@ var TSOS;
                         _StdOut.putText("Trace OFF");
                         break;
                     default:
-                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
+                        _StdOut.putText("Invalid argument.  Usage: trace <on | off>.");
                 }
             } else {
                 _StdOut.putText("Usage: trace <on | off>");
@@ -261,6 +278,38 @@ var TSOS;
                 _OsShell.promptStr = args[0];
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+            }
+        };
+
+        Shell.prototype.shellWhereAmI = function (args) {
+            _StdOut.putText("You are at: " + window.location.host.valueOf());
+        };
+
+        Shell.prototype.shellOverrideClockspeed = function (args) {
+            if (args.length > 0) {
+                var clockspeed = args[0];
+                switch (clockspeed) {
+                    case "high":
+                        CPU_CLOCK_INTERVAL = 8;
+                        clearInterval(_hardwareClockID);
+                        _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                        break;
+                    case "normal":
+                        CPU_CLOCK_INTERVAL = 100;
+                        clearInterval(_hardwareClockID);
+                        _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                        break;
+                    case "low":
+                        CPU_CLOCK_INTERVAL = 1000;
+                        clearInterval(_hardwareClockID);
+                        _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
+                        break;
+                    default:
+                        _StdOut.putText("Invalid argument. Usage: overclock <low | normal | high>.");
+                        brea;
+                }
+            } else {
+                _StdOut.putText("Usage: overclock <low | normal | high>.");
             }
         };
         return Shell;

@@ -47,6 +47,16 @@ var TSOS;
 
                     // ... and reset our buffer.
                     this.buffer = "";
+                } else if (chr === String.fromCharCode(8)) {
+                    // Backspace character which tells us to remove the previous key.
+                    this.removeText(this.buffer[this.buffer.length - 1]);
+
+                    // remove from buffer
+                    var newBuffer = "";
+                    for (var i = 0; i < this.buffer.length - 1; i++) {
+                        newBuffer += this.buffer[i];
+                    }
+                    this.buffer = newBuffer;
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -73,6 +83,23 @@ var TSOS;
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;
+            }
+        };
+
+        Console.prototype.removeText = function (text) {
+            // My first inclination here was to write two functions: putChar() and putString().
+            // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate
+            // between the two.  So rather than be like PHP and write two (or more) functions that
+            // do the same thing, thereby encouraging confusion and decreasing readability, I
+            // decided to write one function and use the term "text" to connote string or char.
+            // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
+            if (text !== "") {
+                // Move current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                this.currentXPosition = this.currentXPosition - offset;
+
+                // Draw the text at the current X and Y coordinates.
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text, true);
             }
         };
 

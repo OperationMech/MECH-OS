@@ -34,7 +34,7 @@ var TSOS;
 
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
-            document.getElementById("taHostLog").value = "";
+            document.getElementById("taHostLog").textContent = "";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
@@ -56,11 +56,13 @@ var TSOS;
             var now = new Date().getTime();
 
             // Build the log string.
-            var str = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + " })" + "\n";
+            var curTime = new Date(Date.now());
+            var localTime = curTime.toLocaleString();
+            var str = localTime + "<br>({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})" + "<br><br>";
 
             // Update the log console.
             var taLog = document.getElementById("taHostLog");
-            taLog.value = str + taLog.value;
+            taLog.innerHTML = str + taLog.innerHTML;
             // Optionally update a log database or some streaming service.
         };
 

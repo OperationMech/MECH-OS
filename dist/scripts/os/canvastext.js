@@ -42,7 +42,8 @@ var TSOS;
             return total;
         };
 
-        CanvasTextFunctions.draw = function (ctx, font, size, x, y, str) {
+        CanvasTextFunctions.draw = function (ctx, font, size, x, y, str, remove) {
+            if (typeof remove === "undefined") { remove = false; }
             var total = 0;
             var len = str.length;
             var mag = size / 25.0;
@@ -50,7 +51,12 @@ var TSOS;
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.8 * mag; // slightly thicker lines 2.0 -> 2.8
-            ctx.strokeStyle = "green"; // changed color
+            if (!remove) {
+                ctx.strokeStyle = "green"; // changed color
+            } else {
+                ctx.strokeStyle = "black"; // removal color
+                ctx.lineWidth = 5.0 * mag; // even thicker lines for removal 2.0 -> 5.0
+            }
 
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));
@@ -83,6 +89,9 @@ var TSOS;
         CanvasTextFunctions.enable = function (ctx) {
             ctx.drawText = function (font, size, x, y, text) {
                 return CanvasTextFunctions.draw(ctx, font, size, x, y, text);
+            };
+            ctx.drawText = function (font, size, x, y, text, remove) {
+                return CanvasTextFunctions.draw(ctx, font, size, x, y, text, remove);
             };
             ctx.measureText = function (font, size, text) {
                 return CanvasTextFunctions.measure(font, size, text);
