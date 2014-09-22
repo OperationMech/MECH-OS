@@ -3,9 +3,10 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
+   <meta name="author"             content="Anthony Cali" />
    <link rel="stylesheet" href="dist/styles/tsos.css" type="text/css" media="screen" />
    <title>
-      TSOS - a browser-based virtual Operating System in TypeScript
+      MECH-OS : A typescript OS
    </title>
 
    <!-- Globals CONSTANTS and _Variables. Must included be first. -->
@@ -64,6 +65,7 @@
              value="Reset"
              tabindex="2"
              onclick="TSOS.Control.hostBtnReset_click(this);">
+      <h2 align="center">MECH-OS</h2>
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
@@ -73,37 +75,33 @@
               tabindex="3">
       </canvas>
 
-       <div id="divUserProgramInput" style="margin-left:50px;">
-           <label>
-               User Program Input
-               <br>
-               <textarea name="taProgramInput"
-                         id  ="taProgramInput"
-                         rows="8"
-                         cols="48"
-                       ></textarea>
-           </label>
-       </div>
-
        <footer class="footerText" style="width:100%;margin-left:300px;">
            <br>
            Copyright &copy; 2008 - 2014 No Rights Reserved.
-           <br>
-           Reproduction is prohibited without the express written consent of
-           Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
        </footer>
    </div>
 
-   <div id="divLog" style="margin-left:850px;">
-      <label>
+   <div id="divLog" style="margin-left:820px;">
+      <p>
          Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
+         <div id="taHostLog"
+              contenteditable="false"
+              class="logArea">
+         </div>
+      </p>
+   </div>
+
+   <div id="divUserProgramInput" style="margin-left:820px;">
+       <label>
+           User Program Input
+           <br>
+           <br>
+           <textarea name="taProgramInput"
+                     id  ="taProgramInput"
+                     rows="8"
+                     cols="50">
+           </textarea>
+       </label>
    </div>
 </div>
 

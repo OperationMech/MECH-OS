@@ -39,7 +39,7 @@ module TSOS {
 
             // Clear the log text box.
             // Use the TypeScript cast to HTMLInputElement
-            (<HTMLInputElement> document.getElementById("taHostLog")).value="";
+            (<HTMLDivElement> document.getElementById("taHostLog")).textContent = "";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement
@@ -54,17 +54,20 @@ module TSOS {
 
         public static hostLog(msg: string, source: string = "?"): void {
             // Note the OS CLOCK.
-            var clock: number = _OSclock;
+            var clock:number = _OSclock;
 
             // Note the REAL clock in milliseconds since January 1, 1970.
-            var now: number = new Date().getTime();
+            var now:number = new Date().getTime();
 
             // Build the log string.
-            var str: string = "({ clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now  + " })"  + "\n";
+            var curTime: Date = new Date(Date.now());
+            var localTime: string = curTime.toLocaleString();
+            var str:string = localTime + "<br>({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})"
+                                       + "<br><br>";
 
             // Update the log console.
-            var taLog = <HTMLInputElement> document.getElementById("taHostLog");
-            taLog.value = str + taLog.value;
+            var taLog = <HTMLDivElement> document.getElementById("taHostLog");
+            taLog.innerHTML = str + taLog.innerHTML;
             // Optionally update a log database or some streaming service.
         }
 
