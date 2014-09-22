@@ -1,8 +1,7 @@
-TSOS-2014
+MECH-OS
 ============
 
-This is my Fall 2014 Operating Systems class initial project.
-See http://www.labouseur.com/courses/os/ for details.
+A port of Alan's TSOS
 
 Setup TypeScript/Gulp
 =====================
