@@ -15,6 +15,7 @@ module TSOS {
         // Properties
         public promptStr = ">";
         public commandList = [];
+        public commandNames = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
         public statusMessage ="";
@@ -33,78 +34,93 @@ module TSOS {
                                   "ver",
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "ver";
 
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
                                   "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "help";
+
 
             // shutdown
             sc = new ShellCommand(this.shellShutdown,
                                   "shutdown",
                                   "- Shuts down the virtual OS but leaves the underlying hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "shutdown";
+
 
             // cls
             sc = new ShellCommand(this.shellCls,
                                   "cls",
                                   "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "cls";
 
             // date
             sc = new ShellCommand(this.shellDate,
                                   "date",
                                   "- Displays the current time in UTC date format.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "date";
 
             // man <topic>
             sc = new ShellCommand(this.shellMan,
                                   "man",
                                   "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "man";
 
             // trace <on | off>
             sc = new ShellCommand(this.shellTrace,
                                   "trace",
                                   "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "trace";
 
             // rot13 <string>
             sc = new ShellCommand(this.shellRot13,
                                   "rot13",
                                   "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "rot13";
 
             // prompt <string>
             sc = new ShellCommand(this.shellPrompt,
                                   "prompt",
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "prompt";
 
             // whereami
             sc = new ShellCommand(this.shellWhereAmI,
                                   "whereami",
                                   "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "whereami";
 
             // override clockspeed
             sc = new ShellCommand(this.shellOverrideClockspeed,
                                   "overclock",
                                   "<low | normal | fast> - Sets the clockspeed; normal is default.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "overclock";
 
             // status
             sc = new ShellCommand(this.shellStatus,
                                   "status",
                                   "<string> - Displays a status message in the host log.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "status";
 
             // forcepanic
             sc = new ShellCommand(this.shellPanic,
                                   "forcepanic",
                                   "- Forces a shell panic bugcheck of 0xBADD.");
             this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "forcepanic";
 
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.

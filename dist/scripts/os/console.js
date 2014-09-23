@@ -33,6 +33,11 @@ var TSOS;
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
 
+        Console.prototype.clearLine = function () {
+            _DrawingContext.clearRect(0, this.currentYPosition - this.currentFontSize - _DrawingContext.fontDescent(this.currentFont, this.currentFontSize), _Canvas.width, this.currentYPosition);
+            this.currentXPosition = 0;
+        };
+
         Console.prototype.resetXY = function () {
             this.currentXPosition = 0;
             this.currentYPosition = this.currentFontSize;
@@ -47,29 +52,55 @@ var TSOS;
                 var pos = this.cmdBufferPos;
                 var cmdBufferSize = this.cmdBuffer.length;
                 if (chr === "↓" || chr === "↑") {
-                    if (chr === "↑" && pos >= 0) {
+                    if (chr === "↑" && pos > 0) {
                         this.cmdBufferPos -= 1;
                         this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                        this.clearLine();
+                        this.putText(">");
                         this.putText(this.buffer);
                     } else if (chr === "↓" && pos < cmdBufferSize) {
                         this.cmdBufferPos += 1;
                         this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                        this.clearLine();
+                        this.putText(">");
                         this.putText(this.buffer);
                     } else {
                         this.buffer = this.cmdBuffer[this.cmdBufferPos];
+                        this.clearLine();
+                        this.putText(">");
                         this.putText(this.buffer);
                     }
                     // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 } else if (chr === String.fromCharCode(13)) {
-                    // The enter key marks the end of a console command, so ...
+                    // The enter key marks the end of a console command, so store the command then ...
+                    if (this.buffer !== "") {
+                        this.cmdBuffer[this.cmdBuffer.length] = this.buffer;
+                        this.cmdBufferPos = this.cmdBuffer.length;
+                    }
+
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
-                    this.cmdBuffer[this.cmdBuffer.length] = this.buffer;
-                    this.cmdBuffer.length += 1;
-                    this.cmdBufferPos = this.cmdBuffer.length;
 
                     // ... and reset our buffer.
                     this.buffer = "";
+                } else if (chr === String.fromCharCode(9)) {
+                    // The tab key is used to auto-insert a command.
+                    // check for 2 characters in the buffer and command.
+                    if (this.buffer.length > 1) {
+                        var i = 0;
+                        while (i < _OsShell.commandNames.length) {
+                            var cmdbuffer = _OsShell.commandNames[i];
+                            if (this.buffer[0] === cmdbuffer[0] && this.buffer[1] === cmdbuffer[1]) {
+                                this.buffer = cmdbuffer;
+                                i = _OsShell.commandNames.length;
+                            } else {
+                                i = i + 1;
+                            }
+                        }
+                        this.clearLine();
+                        this.putText(">");
+                        this.putText(this.buffer);
+                    }
                 } else if (chr === String.fromCharCode(8)) {
                     // Backspace character which tells us to remove the previous key.
                     this.removeText(this.buffer[this.buffer.length - 1]);
