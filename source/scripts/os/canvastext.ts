@@ -141,7 +141,7 @@ module TSOS {
             return total;
         }
 
-        public static draw(ctx, font, size, x, y, str, remove = false) {
+        public static draw(ctx, font, size, x, y, str, remove = false, isBSOD = false) {
             var total = 0;
             var len = str.length;
             var mag = size / 25.0;
@@ -149,7 +149,9 @@ module TSOS {
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.8 * mag; // slightly thicker lines 2.0 -> 2.8
-            if (!remove) {
+            if (isBSOD) {
+                ctx.strokeStyle = "white"; // Everyone loves white text on a blue background .....
+            } else if(!remove) {
                 ctx.strokeStyle = "green"; // changed color
             } else {
                 ctx.strokeStyle = "black"; // removal color
@@ -201,9 +203,9 @@ module TSOS {
                 var w = CanvasTextFunctions.measure(font,size,text);
                 return CanvasTextFunctions.draw( ctx, font,size,x-w,y,text);
             };
-            ctx.drawTextCenter = function(font,size,x,y,text) {
+            ctx.drawTextCenter = function(font,size,x,y,text,isBSOD) {
                 var w = CanvasTextFunctions.measure(font,size,text);
-                return CanvasTextFunctions.draw( ctx, font,size,x-w/2,y,text);
+                return CanvasTextFunctions.draw( ctx, font,size,x-w/2,y,text,false,isBSOD);
             };
         }
     }

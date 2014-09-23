@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
@@ -74,18 +74,23 @@
               height="600px"
               tabindex="3">
       </canvas>
+      <canvas id="displayBSOD"
+              width="800px"
+              height="600px"
+              tabindex="4"
+              hidden>
+      </canvas>
 
-       <footer class="footerText" style="width:100%;margin-left:300px;">
-           <br>
-           Copyright &copy; 2008 - 2014 No Rights Reserved.
-       </footer>
+      <footer class="footerText" style="width:100%;margin-left:300px;">
+          <br>
+          Copyright &copy; 2008 - 2014 No Rights Reserved.
+      </footer>
    </div>
 
    <div id="divLog" style="margin-left:820px;">
       <p>
          Host Log
          <div id="taHostLog"
-              contenteditable="false"
               class="logArea">
          </div>
       </p>

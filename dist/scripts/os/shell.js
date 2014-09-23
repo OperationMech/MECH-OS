@@ -70,6 +70,10 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<string> - Displays a status message in the host log.");
             this.commandList[this.commandList.length] = sc;
 
+            // forcepanic
+            sc = new TSOS.ShellCommand(this.shellPanic, "forcepanic", "- Forces a shell panic bugcheck of 0xBADD.");
+            this.commandList[this.commandList.length] = sc;
+
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -325,6 +329,10 @@ var TSOS;
             } else {
                 _StdOut.putText("Usage: status <string> Please supply a string.");
             }
+        };
+
+        Shell.prototype.shellPanic = function (args) {
+            _Kernel.krnTrapError("0xBADD");
         };
         return Shell;
     })();

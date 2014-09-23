@@ -100,6 +100,12 @@ module TSOS {
                                   "<string> - Displays a status message in the host log.");
             this.commandList[this.commandList.length] = sc;
 
+            // forcepanic
+            sc = new ShellCommand(this.shellPanic,
+                                  "forcepanic",
+                                  "- Forces a shell panic bugcheck of 0xBADD.");
+            this.commandList[this.commandList.length] = sc;
+
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -348,6 +354,10 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: status <string> Please supply a string.");
             }
+        }
+
+        public shellPanic(args){
+            _Kernel.krnTrapError("0xBADD");
         }
 
     }

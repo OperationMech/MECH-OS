@@ -32,8 +32,10 @@ var _OSclock: number = 0;  // Page 23.
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
 var _Canvas: HTMLCanvasElement = null;  // Initialized in hostInit().
+var _bCanvas: HTMLCanvasElement = null; // Initialized in hostInit().
 var _DrawingContext = null;             // Initialized in hostInit().
-var _DefaultFontFamily = "system";    // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
+var _bContext = null;                   // Initialized in hostInit().
+var _DefaultFontFamily = "system";      // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;              // Additional space added to font size when advancing a line.
 

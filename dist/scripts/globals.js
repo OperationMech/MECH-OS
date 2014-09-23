@@ -29,7 +29,9 @@ var _OSclock = 0;
 var _Mode = 0;
 
 var _Canvas = null;
+var _bCanvas = null;
 var _DrawingContext = null;
+var _bContext = null;
 var _DefaultFontFamily = "system";
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;
