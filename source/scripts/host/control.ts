@@ -40,9 +40,13 @@ module TSOS {
             CanvasTextFunctions.enable(_DrawingContext);   // Text functionality is now built in to the HTML5 canvas. But this is old-school, and fun.
             CanvasTextFunctions.enable(_bContext);         // Bluescreen canvas text context
 
-            // Clear the log text box.
-            // Use the TypeScript cast to HTMLInputElement
+            // Clear the log.
+            // Use the TypeScript cast to HTMLDivElement.
             (<HTMLDivElement> document.getElementById("taHostLog")).textContent = "";
+
+            //Clear the program input.
+            //Use TypeScript to cast HTMLInputElement.
+            (<HTMLInputElement> document.getElementById("taProgramInput")).textContent = "";
 
             // Set focus on the start button.
             // Use the TypeScript cast to HTMLInputElement

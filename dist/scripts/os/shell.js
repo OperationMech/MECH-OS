@@ -88,6 +88,11 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "forcepanic";
 
+            // load
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads and validates the program input area.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "load";
+
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.
             //
@@ -347,6 +352,28 @@ var TSOS;
 
         Shell.prototype.shellPanic = function (args) {
             _Kernel.krnTrapError("0xBADD");
+        };
+
+        Shell.prototype.shellLoad = function (args) {
+            var program = document.getElementById("taProgramInput").value;
+            var valid = "";
+            var i = 0;
+            while (i < program.length) {
+                if ((program[i] >= "A" && program[i] <= "F") || (program[i] >= "a" && program[i] <= "f")) {
+                    // assume caps for hex digits
+                    valid[i] = program[i].toUpperCase();
+                } else if (program[i] == " " || (program[i] >= "0" && program[i] <= "9")) {
+                    // spaces and numbers remain normal once validated
+                    valid[i] = program[i];
+                } else {
+                    _StdOut.putText("Program error not hex at character: " + i + " ," + program[i] + ".");
+                    return 1;
+                }
+                i++;
+            }
+
+            // Add valid program to memory here
+            return 0;
         };
         return Shell;
     })();

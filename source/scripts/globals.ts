@@ -31,6 +31,7 @@ var _OSclock: number = 0;  // Page 23.
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
+
 var _Canvas: HTMLCanvasElement = null;  // Initialized in hostInit().
 var _bCanvas: HTMLCanvasElement = null; // Initialized in hostInit().
 var _DrawingContext = null;             // Initialized in hostInit().
