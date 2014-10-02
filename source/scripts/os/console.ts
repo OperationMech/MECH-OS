@@ -113,13 +113,16 @@ module TSOS {
                     }
                 } else if (chr === String.fromCharCode(8)){
                     // Backspace character which tells us to remove the previous key.
-                    this.removeText(this.buffer[this.buffer.length - 1]);
-                    // remove from buffer
-                    var newBuffer = "";
-                    for(var i = 0; i < this.buffer.length -1; i++){
-                        newBuffer += this.buffer[i];
+                    // Check if there is a command in the buffer
+                    if(this.buffer.length > 0) {
+                        this.removeText(this.buffer[this.buffer.length - 1]);
+                        // remove from buffer
+                        var newBuffer = "";
+                        for (var i = 0; i < this.buffer.length - 1; i++) {
+                            newBuffer += this.buffer[i];
+                        }
+                        this.buffer = newBuffer;
                     }
-                    this.buffer = newBuffer;
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...

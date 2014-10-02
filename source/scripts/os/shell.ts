@@ -387,19 +387,31 @@ module TSOS {
             var program = (<HTMLInputElement> document.getElementById("taProgramInput")).value;
             var valid = "";
             var i = 0;
-            while(i < program.length){
-                if((program[i] >= "A" && program[i] <= "F" ) || (program[i] >= "a" && program[i] <= "f")) {
-                    // assume caps for hex digits
-                    valid[i] = program[i].toUpperCase();
-                } else if(program[i] == " " || (program[i] >= "0" && program[i] <= "9")) {
-                    // spaces and numbers remain normal once validated
-                    valid[i] = program[i];
-                } else {
-                    _StdOut.putText("Program error not hex at character: " + i + " ," + program[i] + ".");
+            if(program.length > 0 ) {
+                while(i < program.length){
+                    if((program[i] >= "A" && program[i] <= "F" ) || (program[i] >= "a" && program[i] <= "f")) {
+                        // assume caps for hex digits
+                        valid += program[i].toUpperCase();
+                    } else if(program[i] >= "0" && program[i] <= "9") {
+                        //handle numbers
+                        valid += program[i];
+                    } else if(program[i] === " "){
+                        //eliminate spaces
+                    } else {
+                        _StdOut.putText("Program error not hex at character: " + i + ", " + program[i] + ".");
+                        return 1;
+                    }
+                    i++;
+                }
+                if(valid.length % 2 !== 0){
+                    _StdOut.putText("Error instructions not even.");
                     return 1;
                 }
-                i++;
+            } else {
+                _StdOut.putText("No program.");
+                return 1;
             }
+
             // Add valid program to memory here
             return 0;
         }
