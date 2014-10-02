@@ -132,11 +132,13 @@ module TSOS {
                     }
                 } else {
                     if(keyCode == 38){
-                       chr = "↑";
+                        chr = "↑";
                     }else if(keyCode == 40) {
                         chr = "↓";
-                    }else {
-                       chr = String.fromCharCode(keyCode);
+                    }else if(keyCode == 222) {
+                        chr = "'";
+                    } else {
+                        chr = String.fromCharCode(keyCode);
                     }
                 }
                 _KernelInputQueue.enqueue(chr);

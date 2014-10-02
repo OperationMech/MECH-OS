@@ -43,6 +43,7 @@ module TSOS {
             // Clear the log.
             // Use the TypeScript cast to HTMLDivElement.
             (<HTMLDivElement> document.getElementById("taHostLog")).textContent = "";
+            (<HTMLDivElement> document.getElementById("taTime")).textContent = "";
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -69,12 +70,17 @@ module TSOS {
             // Build the log string.
             var curTime: Date = new Date(Date.now());
             var localTime: string = curTime.toLocaleString();
-            var str:string = localTime + "<br>({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})"
-                                       + "<br><br>";
+            var str:string = "({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})\n\n";
 
             // Update the log console.
-            var taLog = <HTMLDivElement> document.getElementById("taHostLog");
-            taLog.innerHTML = str;
+            var taTime = (<HTMLDivElement> document.getElementById("taTime"));
+            var taLog = (<HTMLDivElement> document.getElementById("taHostLog"));
+            if(taLog.textContent.length < 10000){
+                taLog.textContent = str + taLog.textContent.toString();
+            } else {
+                taLog.textContent = str + "- Log Refresh -";
+            }
+            taTime.textContent = localTime;
             // Optionally update a log database or some streaming service.
         }
 

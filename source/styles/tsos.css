@@ -64,3 +64,12 @@ h3 {
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+.timeArea {
+    border:none;
+    background-color: whitesmoke;
+    width: 420px;
+    height: 20px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

@@ -38,6 +38,7 @@ var TSOS;
             // Clear the log.
             // Use the TypeScript cast to HTMLDivElement.
             document.getElementById("taHostLog").textContent = "";
+            document.getElementById("taTime").textContent = "";
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -65,11 +66,17 @@ var TSOS;
             // Build the log string.
             var curTime = new Date(Date.now());
             var localTime = curTime.toLocaleString();
-            var str = localTime + "<br>({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})" + "<br><br>";
+            var str = "({clock:" + clock + ", source:" + source + ", msg:" + msg + ", now:" + now + "})\n\n";
 
             // Update the log console.
+            var taTime = document.getElementById("taTime");
             var taLog = document.getElementById("taHostLog");
-            taLog.innerHTML = str;
+            if (taLog.textContent.length < 10000) {
+                taLog.textContent = str + taLog.textContent.toString();
+            } else {
+                taLog.textContent = str + "- Log Refresh -";
+            }
+            taTime.textContent = localTime;
             // Optionally update a log database or some streaming service.
         };
 

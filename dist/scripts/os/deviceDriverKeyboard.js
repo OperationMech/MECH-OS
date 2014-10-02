@@ -127,6 +127,8 @@ var TSOS;
                         chr = "↑";
                     } else if (keyCode == 40) {
                         chr = "↓";
+                    } else if (keyCode == 222) {
+                        chr = "'";
                     } else {
                         chr = String.fromCharCode(keyCode);
                     }

@@ -33,6 +33,12 @@ var TSOS;
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
         };
 
+        Console.prototype.scrollScreen = function () {
+            var img = _DrawingContext.getImageData(0, _DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) + _FontHeightMargin, _Canvas.width, _Canvas.height);
+            this.clearScreen();
+            _DrawingContext.putImageData(img, 0, 0);
+        };
+
         Console.prototype.clearLine = function () {
             _DrawingContext.clearRect(0, this.currentYPosition - this.currentFontSize - _DrawingContext.fontDescent(this.currentFont, this.currentFontSize), _Canvas.width, this.currentYPosition);
             this.currentXPosition = 0;
@@ -166,13 +172,14 @@ var TSOS;
             * Font descent measures from the baseline to the lowest point in the font.
             * Font height margin is extra spacing between the lines.
             */
-            this.currentYPosition += _DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) + _FontHeightMargin;
+            var descent = _DrawingContext.fontDescent(this.currentFont, this.currentFontSize);
 
             // TODO: Handle scrolling. (Project 1)
-            // simple clear screen scrolling
-            if (this.currentYPosition > 600) {
-                this.clearScreen();
-                this.resetXY();
+            // fixed this to make it actually scroll
+            if (this.currentYPosition > 570) {
+                this.scrollScreen();
+            } else {
+                this.currentYPosition += _DefaultFontSize + descent + _FontHeightMargin;
             }
         };
         return Console;
