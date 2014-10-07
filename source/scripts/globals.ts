@@ -13,7 +13,7 @@
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var APP_NAME: string    = "MECH-OS";   // A better name.
-var APP_VERSION: string = "0.08(007)"; // Changed this to reflect actual version.
+var APP_VERSION: string = "0.16(007)"; // Changed this to reflect actual version.
 
 var CPU_CLOCK_INTERVAL: number = 100;   // This is in ms, or milliseconds, so 1000 = 1 second.
 
@@ -56,6 +56,10 @@ var _StdOut = null;
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
+
+//Memory
+var _RamCapacity = 0x100;
+var _RamProgram = 0x100;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;
