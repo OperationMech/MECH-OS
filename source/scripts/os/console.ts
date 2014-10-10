@@ -19,7 +19,8 @@ module TSOS {
                     public currentYPosition = _DefaultFontSize,
                     public buffer = "",
                     public cmdBufferPos = 0,
-                    public cmdBuffer = []) {
+                    public cmdBuffer = [],
+                    public tabLoc = 0) {
 
         }
 
@@ -44,7 +45,7 @@ module TSOS {
 
         private clearLine(): void {
             _DrawingContext.clearRect(0, this.currentYPosition -
-                                         this.currentFontSize  -
+                                         this.currentFontSize  +
                                          _DrawingContext.fontDescent(this.currentFont, this.currentFontSize)
                                          ,_Canvas.width, this.currentYPosition);
             this.currentXPosition = 0;
@@ -94,17 +95,20 @@ module TSOS {
                     this.buffer = "";
                 } else if(chr === String.fromCharCode(9)){
                     // The tab key is used to auto-insert a command.
-                    // check for 2 characters in the buffer and command.
-                    if(this.buffer.length > 1){
-                        var i = 0;
-                        while(i < _OsShell.commandNames.length) {
-                            var cmdbuffer = _OsShell.commandNames[i];
-                            if(this.buffer[0] === cmdbuffer[0] &&
-                               this.buffer[1] === cmdbuffer[1]) {
+                    // Check for 1 character in the buffer and command.
+                    if(this.buffer.length > 0){
+                        var i = 0 + this.tabLoc;
+                        while(i <= _OsShell.commandNames.length) {
+                            var cmdbuffer = _OsShell.commandNames[i % _OsShell.commandNames.length];
+                            if(this.buffer[0] === cmdbuffer[0]) {
                                this.buffer = cmdbuffer;
-                               i = _OsShell.commandNames.length;
+                               this.tabLoc = i+1;
+                               i = _OsShell.commandNames.length + 1;
+                            } else if(i ===  _OsShell.commandNames.length - 1) {
+                                this.tabLoc = (i + 1) % _OsShell.commandNames.length;
+                                i = _OsShell.commandNames.length + 1;
                             } else {
-                               i = i + 1;
+                                i = i + 1;
                             }
                         }
                         this.clearLine();
