@@ -19,6 +19,12 @@ var TIMER_IRQ = 0;
 // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ = 1;
 
+var CPU_IRQ = 2;
+
+var MEM_IRQ = 3;
+
+var SW_IRQ = 4;
+
 //
 // Global Variables
 //
@@ -43,6 +49,9 @@ var _Kernel;
 var _KernelInterruptQueue = null;
 var _KernelBuffers = null;
 var _KernelInputQueue = null;
+var _ResidentQueue = null;
+var _ReadyQueue = null;
+var _TerminatedQueue = null;
 
 // Standard input and output
 var _StdIn = null;
@@ -54,7 +63,9 @@ var _OsShell;
 
 //Memory
 var _RamCapacity = 0x100;
-var _RamProgram = 0x100;
+var _RamBlock = 0x100;
+var _MA;
+var _MMU;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;

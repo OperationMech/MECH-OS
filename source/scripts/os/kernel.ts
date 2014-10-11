@@ -23,6 +23,10 @@ module TSOS {
             _KernelBuffers = new Array();         // Buffers... for the kernel.
             _KernelInputQueue = new Queue();      // Where device input lands before being processed out somewhere.
             _Console = new Console();          // The command line interface / console I/O device.
+            _ResidentQueue = new Queue();      // Program residency queue
+            _ReadyQueue = new Queue();         // Program ready queue
+            _TerminatedQueue = new Queue();    // Program terminated queue
+
 
             // Initialize the console.
             _Console.init();
@@ -122,8 +126,17 @@ module TSOS {
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
+                case CPU_IRQ:
+                    this.krnTrapErrorSoftfalt("CPU error detected. irq=" + irq + " params=[" + params +"]");
+                    break;
+                case MEM_IRQ:
+                    this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
+                    break;
+                case SW_IRQ:
+                    this.krnSysCall(_CPU.Yreg,_CPU.Xreg);
+                    break;
                 default:
-                    this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
+                    this.krnTrapErrorSysfault("Invalid interrupt request. irq=" + irq + " params=[" + params + "]");
             }
         }
 
@@ -146,6 +159,24 @@ module TSOS {
         // - ReadFile
         // - WriteFile
         // - CloseFile
+        private krnSysCall(val, type) {
+            switch (type){
+                case 0x02:
+                   var i = val;
+                   var strOut = "";
+                   _MMU.moveToAddr(i);
+                   while(_MMU.valueOfAddress() != "00" && i < 0x100) {
+                       strOut[i] = _MMU.valueOfAddress();
+                       i = i + 1;
+                       _MMU.moveToAddr(i);
+                   }
+                   _StdOut.putText(strOut);
+                   break;
+                default:
+                   _StdOut.putText(val);
+            }
+
+        }
 
 
         //
@@ -167,7 +198,17 @@ module TSOS {
              }
         }
 
-        public krnTrapError(msg) {
+        public krnTrapErrorSoftfalt(msg) {
+            Control.hostLog("OS ERROR - TRAP: " + msg);
+            // Stop CPU
+            if(_CPU.isExecuting){
+                _CPU.isExecuting = false;
+            }
+            // Process killed
+
+        }
+
+        public krnTrapErrorSysfault(msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
             // Display error on console, perhaps in some sort of colored screen. (Perhaps blue?)
             _Canvas.hidden = true;

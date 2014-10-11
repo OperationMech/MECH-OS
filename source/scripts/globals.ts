@@ -21,6 +21,12 @@ var TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interr
                             // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 var KEYBOARD_IRQ: number = 1;
 
+var CPU_IRQ: number = 2;
+
+var MEM_IRQ: number = 3;
+
+var SW_IRQ: number = 4;
+
 
 //
 // Global Variables
@@ -48,6 +54,9 @@ var _Kernel: TSOS.Kernel;
 var _KernelInterruptQueue = null;
 var _KernelBuffers: any[] = null;
 var _KernelInputQueue = null;
+var _ResidentQueue = null;
+var _ReadyQueue = null;
+var _TerminatedQueue = null;
 
 // Standard input and output
 var _StdIn  = null;
@@ -59,7 +68,9 @@ var _OsShell: TSOS.Shell;
 
 //Memory
 var _RamCapacity = 0x100;
-var _RamProgram = 0x100;
+var _RamBlock = 0x100;
+var _MA: TSOS.MemAlloc;
+var _MMU: TSOS.Mmu;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;

@@ -11,26 +11,25 @@ var TSOS;
             if (typeof mem === "undefined") { mem = null; }
             this.mem = mem;
         }
+        Memory.prototype.erase = function () {
+            this.mem = null;
+        };
+
         Memory.prototype.init = function () {
             while (this.mem.length < _RamCapacity) {
-                this.mem[this.mem.length] = parseInt("0", 16);
+                this.mem[this.mem.length] = parseInt("0x00", 16).toString();
             }
         };
 
         Memory.prototype.read = function (loc) {
-            var retval = 0x100;
-            if (parseInt(loc, 16) > _RamCapacity || parseInt(loc, 16) < 0x00) {
-                return retval;
-            }
-            retval = this.mem[parseInt(loc, 16)];
-            return retval;
+            return this.mem[loc];
         };
 
         Memory.prototype.write = function (loc, value) {
-            if (parseInt(loc, 16) > _RamCapacity || parseInt(loc, 16) < 0x00) {
+            if (loc > _RamCapacity || loc < 0x00) {
                 return false;
             }
-            this.mem[parseInt(loc, 16)] = value;
+            this.mem[loc] = value;
             return true;
         };
         return Memory;

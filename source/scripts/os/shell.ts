@@ -380,7 +380,7 @@ module TSOS {
         }
 
         public shellPanic(args) {
-            _Kernel.krnTrapError("0xBADD");
+            _Kernel.krnTrapErrorSysfault("0xBADD");
         }
 
         public shellLoad(args) {

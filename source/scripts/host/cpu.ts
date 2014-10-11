@@ -23,6 +23,7 @@ module TSOS {
                     public Acc: number = 0,
                     public Xreg: number = 0,
                     public Yreg: number = 0,
+                    public Ireg: number = 0,
                     public Zflag: number = 0,
                     public isExecuting: boolean = false) {
 
@@ -33,6 +34,7 @@ module TSOS {
             this.Acc = 0;
             this.Xreg = 0;
             this.Yreg = 0;
+            this.Ireg = 0;
             this.Zflag = 0;
             this.isExecuting = false;
         }

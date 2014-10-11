@@ -11,29 +11,29 @@ module TSOS {
 
     export class Memory {
 
-        constructor(public mem : any = null){
+        constructor(private mem: string[] = null) {
+
+        }
+
+        public erase(): void {
+            this.mem = null;
         }
 
         public init(): void {
-            while (this.mem.length < _RamCapacity){
-                this.mem[this.mem.length] = parseInt("0",16);
+            while (this.mem.length < _RamCapacity) {
+                this.mem[this.mem.length] = parseInt("0x00",16).toString();
             }
         }
 
-        public read(loc): number {
-            var retval = 0x100;
-            if (parseInt(loc, 16) > _RamCapacity || parseInt(loc, 16) < 0x00) {
-                return retval;
-            }
-            retval = this.mem[parseInt(loc, 16)];
-            return retval;
+        public read(loc): string {
+            return this.mem[loc];
         }
 
-        public write(loc, value): boolean {
-            if(parseInt(loc, 16) > _RamCapacity || parseInt(loc, 16) < 0x00) {
+        public write(loc, value: string): boolean {
+            if(loc > _RamCapacity || loc < 0x00) {
                 return false;
             }
-            this.mem[parseInt(loc,16)] = value;
+            this.mem[loc] = value;
             return true;
         }
     }

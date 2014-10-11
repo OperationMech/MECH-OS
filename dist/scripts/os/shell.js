@@ -351,7 +351,7 @@ var TSOS;
         };
 
         Shell.prototype.shellPanic = function (args) {
-            _Kernel.krnTrapError("0xBADD");
+            _Kernel.krnTrapErrorSysfault("0xBADD");
         };
 
         Shell.prototype.shellLoad = function (args) {
