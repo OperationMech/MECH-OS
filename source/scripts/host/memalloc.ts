@@ -11,12 +11,12 @@ module TSOS {
 
     export class MemAlloc {
 
-        constructor(private memory = new Memory()) {
+        constructor(private memory: TSOS.Memory) {
 
         }
 
         public init(): void {
-            this.constructor();
+            this.memory.init();
         }
 
         public clear(): void {

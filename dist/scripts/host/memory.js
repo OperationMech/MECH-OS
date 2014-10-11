@@ -8,16 +8,16 @@ var TSOS;
 (function (TSOS) {
     var Memory = (function () {
         function Memory(mem) {
-            if (typeof mem === "undefined") { mem = null; }
+            if (typeof mem === "undefined") { mem = []; }
             this.mem = mem;
         }
         Memory.prototype.erase = function () {
-            this.mem = null;
+            this.mem = [];
         };
 
         Memory.prototype.init = function () {
             while (this.mem.length < _RamCapacity) {
-                this.mem[this.mem.length] = parseInt("0x00", 16).toString();
+                this.mem[this.mem.length] = "00";
             }
         };
 

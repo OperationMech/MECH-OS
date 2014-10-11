@@ -99,6 +99,10 @@ module TSOS {
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
 
+            // ... Create and initialize the Memory Accessor
+            _MA = new MemAlloc(new Memory());
+            _MA.init();
+
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();
             _CPU.init();

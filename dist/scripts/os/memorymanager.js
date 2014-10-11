@@ -7,9 +7,11 @@ Client memory manager translates addresses with respect to the base register of 
 var TSOS;
 (function (TSOS) {
     var Mmu = (function () {
-        function Mmu() {
-            this.baseAddr = 0;
-            this.address = 0;
+        function Mmu(baseAddr, address) {
+            if (typeof baseAddr === "undefined") { baseAddr = 0; }
+            if (typeof address === "undefined") { address = 0; }
+            this.baseAddr = baseAddr;
+            this.address = address;
         }
         Mmu.prototype.init = function () {
             this.baseAddr = 0;

@@ -10,8 +10,10 @@
 module TSOS {
     export class Mmu {
 
-        private baseAddr = 0;
-        private address = 0;
+        constructor(private baseAddr = 0,
+                    private address = 0){
+
+        }
 
         public init(): void {
             this.baseAddr = 0;

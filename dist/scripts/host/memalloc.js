@@ -8,11 +8,10 @@ var TSOS;
 (function (TSOS) {
     var MemAlloc = (function () {
         function MemAlloc(memory) {
-            if (typeof memory === "undefined") { memory = new TSOS.Memory(); }
             this.memory = memory;
         }
         MemAlloc.prototype.init = function () {
-            this.constructor();
+            this.memory.init();
         };
 
         MemAlloc.prototype.clear = function () {

@@ -11,17 +11,17 @@ module TSOS {
 
     export class Memory {
 
-        constructor(private mem: string[] = null) {
+        constructor(private mem = []) {
 
         }
 
         public erase(): void {
-            this.mem = null;
+            this.mem = [];
         }
 
         public init(): void {
             while (this.mem.length < _RamCapacity) {
-                this.mem[this.mem.length] = parseInt("0x00",16).toString();
+                this.mem[this.mem.length] = "00"
             }
         }
 
