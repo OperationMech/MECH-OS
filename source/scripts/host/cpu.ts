@@ -24,7 +24,7 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Ireg: number = 0,
-                    public Zflag: number = 0,
+                    public Zflag: number = 1,
                     public isExecuting: boolean = false) {
 
         }
@@ -35,7 +35,7 @@ module TSOS {
             this.Xreg = 0;
             this.Yreg = 0;
             this.Ireg = 0;
-            this.Zflag = 0;
+            this.Zflag = 1;
             this.isExecuting = false;
         }
 
