@@ -19,7 +19,7 @@ module TSOS {
             Control.hostLog("bootstrap", "host");  // Use hostLog because we ALWAYS want this, even if _Trace is off.
 
             // Initialize the MMU
-            _MMU = new Mmu();
+            _MMU = new TSOS.Mmu();
             _MMU.init();
 
             // Initialize our global queues.
