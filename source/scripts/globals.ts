@@ -66,11 +66,14 @@ var _StdOut = null;
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 
-//Memory
+// Memory
 var _RamCapacity = 0x100;
 var _RamBlock = 0x100;
 var _MA: TSOS.MemAlloc;
 var _MMU: TSOS.Mmu;
+
+// Active Process control block
+var _CurPCB: TSOS.Pcb = null;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;

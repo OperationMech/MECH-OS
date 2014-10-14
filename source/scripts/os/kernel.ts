@@ -67,6 +67,10 @@ module TSOS {
         public krnShutdown() {
             this.krnTrace("begin shutdown OS");
             // TODO: Check for running processes.  Alert if there are some, alert and stop.  Else...
+            if(_CPU.isExecuting){
+                this.krnTrace("Programs running, terminating shutdown.");
+                return;
+            }
             // ... Disable the Interrupts.
             this.krnTrace("Disabling the interrupts.");
             this.krnDisableInterrupts();
@@ -90,9 +94,9 @@ module TSOS {
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
+            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
-            } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
+            } else {                      // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
         }

@@ -45,26 +45,33 @@ var TSOS;
         };
 
         Pcb.prototype.saveCpuState = function (CPU) {
-            this.PC = CPU.PC;
-            this.Acc = CPU.Acc;
-            this.Xreg = CPU.Xreg;
-            this.Yreg = CPU.Yreg;
-            this.Ireg = CPU.Ireg;
-            this.Zflag = CPU.Zflag;
+            this.PC = _CPU.PC;
+            this.Acc = _CPU.Acc;
+            this.Xreg = _CPU.Xreg;
+            this.Yreg = _CPU.Yreg;
+            this.Ireg = _CPU.Ireg;
+            this.Zflag = _CPU.Zflag;
         };
 
         Pcb.prototype.restoreCpuState = function (CPU) {
-            CPU.PC = this.PC;
-            CPU.Acc = this.Acc;
-            CPU.Xreg = this.Xreg;
-            CPU.Yreg = this.Yreg;
-            CPU.Ireg = this.Ireg;
-            CPU.Zflag = this.Zflag;
+            _CPU.PC = this.PC;
+            _CPU.Acc = this.Acc;
+            _CPU.Xreg = this.Xreg;
+            _CPU.Yreg = this.Yreg;
+            _CPU.Ireg = this.Ireg;
+            _CPU.Zflag = this.Zflag;
+        };
+
+        Pcb.prototype.getBaseAddress = function () {
+            return this.baseAddr;
+        };
+
+        Pcb.prototype.setBaseAddress = function (inBaseAddr) {
+            this.baseAddr = inBaseAddr;
         };
 
         Pcb.prototype.toString = function () {
-            var space = " ";
-            var output = space + this.PC.toString(16) + space + this.Acc.toString(16) + space + this.Xreg.toString(16) + space + this.Yreg.toString(16) + space + this.Ireg.toString(16) + space + this.Zflag.toString(16);
+            var output = "PID: " + this.Id.toString() + " BaseAddress: " + this.baseAddr.toString(16) + " ProgramCounter: " + this.PC.toString(16) + " Accumulator: " + this.Acc.toString(16) + " Xregister: " + this.Xreg.toString(16) + " Yregister: " + this.Yreg.toString(16) + " InstructionRegister: " + this.Ireg.toString(16) + " Zflag: " + this.Zflag.toString(16);
             return output;
         };
         return Pcb;

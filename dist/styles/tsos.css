@@ -46,6 +46,10 @@ h3 {
   width: 100px;
 }
 
+.half_button {
+    width: 50px;
+}
+
 .footerText {
   color: black;
   font-family: Arial, Helvetica, sans-serif;
@@ -63,4 +67,13 @@ h3 {
   height: 200px;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.timeArea {
+    border:none;
+    background-color: whitesmoke;
+    width: 420px;
+    height: 20px;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }

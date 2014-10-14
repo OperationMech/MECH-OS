@@ -39,10 +39,139 @@ var TSOS;
             this.isExecuting = false;
         };
 
+        Cpu.prototype.fetch = function () {
+            _MMU.moveToAddr(this.PC);
+            this.Ireg = parseInt(_MMU.valueOfAddress(), 16);
+            this.PC = this.PC + 1;
+        };
+
+        Cpu.prototype.decodeAndExecIns = function () {
+            switch (this.Ireg) {
+                case 0xA9:
+                    _MMU.moveToAddr(this.PC);
+                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 1;
+                    break;
+                case 0xAD:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    this.Acc = parseInt(memloc, 16);
+                    this.PC = this.PC + 2;
+                    break;
+                case 0x8D:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    _MMU.storeToAddress(this.Acc.toString(16));
+                    this.PC = this.PC + 2;
+                    break;
+                case 0x6D:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 2;
+                    break;
+                case 0xA2:
+                    _MMU.moveToAddr(this.PC);
+                    this.Xreg = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 1;
+                    break;
+                case 0xAE:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    this.Xreg = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 2;
+                    break;
+                case 0xA0:
+                    _MMU.moveToAddr(this.PC);
+                    this.Yreg = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 1;
+                    break;
+                case 0xAC:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    this.Yreg = parseInt(_MMU.valueOfAddress(), 16);
+                    this.PC = this.PC + 2;
+                    break;
+                case 0xEA:
+                    this.PC = this.PC + 1;
+                    break;
+                case 0x00:
+                    this.isExecuting = false;
+                    _CurPCB.saveCpuState(this);
+                    break;
+                case 0xEC:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    if (this.Xreg === parseInt(_MMU.valueOfAddress(), 16)) {
+                        this.Zflag = 0;
+                    }
+                    this.Zflag = 1;
+                    this.PC = this.PC + 2;
+                    break;
+                case 0xD0:
+                    _MMU.moveToAddr(this.PC);
+                    if (this.Zflag === 0) {
+                        this.PC = this.PC + parseInt(_MMU.valueOfAddress(), 16);
+                    } else {
+                        this.PC = this.PC + 1;
+                    }
+                    break;
+                case 0xEE:
+                    var memloc = "0000";
+                    _MMU.moveToAddr(this.PC + 1);
+                    memloc = _MMU.valueOfAddress();
+                    _MMU.moveToAddr(this.PC);
+                    memloc = memloc + _MMU.valueOfAddress();
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    _MMU.storeToAddress((parseInt(_MMU.valueOfAddress(), 16) + 1).toString(16));
+                    this.PC = this.PC + 2;
+                    break;
+                case 0xFF:
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(SW_IRQ, "software syscall"));
+                    this.PC = this.PC + 1;
+                    break;
+                default:
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CPU_IRQ, "Unknown instruction: " + this.Ireg.toString(16) + "."));
+            }
+        };
+
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
+
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+            if (this.isExecuting) {
+                this.fetch();
+                this.decodeAndExecIns();
+                if (!this.isExecuting) {
+                    _StdOut.putText(_CurPCB.toString());
+                    _TerminatedQueue.enqueue(_CurPCB);
+                }
+            }
+            _CurPCB.saveCpuState(this);
         };
         return Cpu;
     })();

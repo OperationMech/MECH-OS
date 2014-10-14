@@ -46,6 +46,10 @@ h3 {
   width: 100px;
 }
 
+.half_button {
+    width: 50px;
+}
+
 .footerText {
   color: black;
   font-family: Arial, Helvetica, sans-serif;

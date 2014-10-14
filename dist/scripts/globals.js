@@ -61,11 +61,14 @@ var _StdOut = null;
 var _Console;
 var _OsShell;
 
-//Memory
+// Memory
 var _RamCapacity = 0x100;
 var _RamBlock = 0x100;
 var _MA;
 var _MMU;
+
+// Active Process control block
+var _CurPCB = null;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;

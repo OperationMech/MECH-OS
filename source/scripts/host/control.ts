@@ -60,6 +60,18 @@ module TSOS {
             }
         }
 
+        public static hostSingleStepInit(): void {
+            // Activate the single step button
+            document.getElementById("btnStep").disabled = false;
+            document.getElementById("btnStepExit").disabled = false;
+
+            // Stop hardware clock
+            clearInterval(_hardwareClockID);
+
+            // Assign focus to the console
+            document.getElementById("display").focus();
+        }
+
         public static hostLog(msg: string, source: string = "?"): void {
             // Note the OS CLOCK.
             var clock:number = _OSclock;
@@ -130,6 +142,22 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static hostBtnStep_click(btn): void {
+            Devices.hostClockPulse();
+        }
+
+        public static hostBtnStepExit_click(btn): void {
+            // Deactivate single step buttons
+            document.getElementById("btnStep").disabled = true;
+            btn.disabled = true;
+
+            // Restore hardware clock
+            _hardwareClockID = setInterval(Devices.hostClockPulse(), CPU_CLOCK_INTERVAL);
+
+            // Assign focus to the console
+            document.getElementById("display").focus();
         }
     }
 }
