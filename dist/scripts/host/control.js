@@ -39,6 +39,8 @@ var TSOS;
             // Use the TypeScript cast to HTMLDivElement.
             document.getElementById("taHostLog").textContent = "";
             document.getElementById("taTime").textContent = "";
+            _CpuArea = document.getElementById("taCpu");
+            _MemoryArea = document.getElementById("taMemoryArea");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -59,12 +61,36 @@ var TSOS;
             // Activate the single step button
             document.getElementById("btnStep").disabled = false;
             document.getElementById("btnStepExit").disabled = false;
+        };
 
-            // Stop hardware clock
-            clearInterval(_hardwareClockID);
+        Control.hostMemory = function () {
+            var memory = _MA.toString();
+            var i = 0;
+            var string = "";
+            while (i < memory.length) {
+                var j = 0;
+                if (i === 0) {
+                    string = "<tr><td>0x000</td>";
+                } else {
+                    string = string + "<tr><td>0x0" + (i * 16).toString(16) + "</td>";
+                }
+                while (j < memory[i].length) {
+                    if (j === memory[i].length - 1) {
+                        string = string + "<td>" + memory[i][j] + "</td></tr>";
+                    } else {
+                        string = string + "<td>" + memory[i][j] + "</td>";
+                    }
+                    j = j + 1;
+                }
+                i = i + 1;
+            }
+            _MemoryArea.innerHTML = string;
+        };
 
-            // Assign focus to the console
-            document.getElementById("display").focus();
+        Control.hostCpu = function () {
+            var string_row1 = "<tr>" + "<td>PC|</td>" + "<td>Ireg|</td>" + "<td>Acc|</td>" + "<td>Xreg|</td>" + "<td>Yreg|</td>" + "<td>Zflag</td></tr>";
+            var string_row2 = "<tr>" + "<td>&nbsp" + _CPU.PC.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Ireg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Acc.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Xreg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Yreg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Zflag.toString(16) + "|<\/td>" + "<\/tr>";
+            _CpuArea.innerHTML = string_row1 + string_row2;
         };
 
         Control.hostLog = function (msg, source) {
@@ -114,6 +140,8 @@ var TSOS;
             _CPU = new TSOS.Cpu();
             _CPU.init();
 
+            this.hostMemory();
+
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
 
@@ -143,19 +171,14 @@ var TSOS;
         };
 
         Control.hostBtnStep_click = function (btn) {
-            TSOS.Devices.hostClockPulse();
+            _STEP = true;
         };
 
         Control.hostBtnStepExit_click = function (btn) {
             // Deactivate single step buttons
             document.getElementById("btnStep").disabled = true;
             btn.disabled = true;
-
-            // Restore hardware clock
-            _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse(), CPU_CLOCK_INTERVAL);
-
-            // Assign focus to the console
-            document.getElementById("display").focus();
+            _EnableStepMode = false;
         };
         return Control;
     })();

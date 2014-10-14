@@ -13,8 +13,8 @@
    <script type="text/javascript" src="dist/scripts/globals.js"></script>
 
    <!-- Host (Hardware Simulation) Routines -->
-   <script type="text/javascript" src="dist/scripts/host/control.js"></script>
    <script type="text/javascript" src="dist/scripts/host/devices.js"></script>
+   <script type="text/javascript" src="dist/scripts/host/control.js"></script>
    <script type="text/javascript" src="dist/scripts/host/memory.js"></script>
    <script type="text/javascript" src="dist/scripts/host/memalloc.js"></script>
    <script type="text/javascript" src="dist/scripts/host/cpu.js"></script>
@@ -73,7 +73,7 @@
        <input type="button"
               id = "btnStep"
               name="brnStep"
-              class="normal_button"
+              class="half_button"
               disabled="disabled"
               value="Step"
               tabindex="5"
@@ -82,12 +82,12 @@
        <input type="button"
               id = "btnStepExit"
               name="brnStepExit"
-              class="normal_button"
+              class="half_button"
               disabled="disabled"
               value="Stop"
               tabindex="6"
-              onclick="TSOS.Control.hostBtnStep_click(this);">
-      <h2 align="center">MECH-OS</h2>
+              onclick="TSOS.Control.hostBtnStepExit_click(this);">
+      <h2 style="margin-left: 410px;">MECH-OS</h2>
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
@@ -129,11 +129,40 @@
            <br>
            <textarea name="taProgramInput"
                      id  ="taProgramInput"
-                     rows="8"
+                     rows="6"
                      cols="50">
            </textarea>
        </label>
    </div>
+   <div id ="divCpu" style="margin-left: 820px;">
+       <p>CPU</p>
+       <table id="taCpu"
+              class="taCpu">
+           <tr>
+               <td>PC|</td>
+               <td>Ireg|</td>
+               <td>Acc|</td>
+               <td>Xreg|</td>
+               <td>Yreg|</td>
+               <td>Zflag</td>
+           </tr>
+           <tr>
+               <td>&nbsp00|</td>
+               <td>&nbsp00|</td>
+               <td>&nbsp00|</td>
+               <td>&nbsp00|</td>
+               <td>&nbsp00|</td>
+               <td>&nbsp01</td>
+           </tr>
+       </table>
+   </div>
+   <div style="margin-left: 820px;">
+        <p>Memory</p>
+        <table id="taMemoryArea"
+               class="taMemoryArea">
+        </table>
+   </div>
+
 </div>
 
 </body>

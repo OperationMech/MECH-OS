@@ -96,6 +96,9 @@ module TSOS {
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
+                // Printing functions
+                Control.hostMemory();
+                Control.hostCpu();
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
@@ -136,6 +139,10 @@ module TSOS {
                     break;
                 case CPU_IRQ:
                     this.krnTrapErrorSoftfalt("CPU error detected. irq=" + irq + " params=[" + params +"]");
+                    _StdOut.advanceLine();
+                    _StdOut.putText(_CurPCB.toString);
+                    _StdOut.advanceLine();
+                    _TerminatedQueue.enqueue(_CurPCB);
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -179,9 +186,11 @@ module TSOS {
                        _MMU.moveToAddr(i);
                    }
                    _StdOut.putText(strOut);
+                   _StdOut.advanceLine();
                    break;
                 default:
-                   _StdOut.putText(val);
+                   _StdOut.putText(val.toString());
+                   _StdOut.advanceLine();
             }
 
         }
@@ -212,8 +221,6 @@ module TSOS {
             if(_CPU.isExecuting){
                 _CPU.isExecuting = false;
             }
-            // Process killed
-
         }
 
         public krnTrapErrorSysfault(msg) {

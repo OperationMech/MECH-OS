@@ -78,7 +78,7 @@ module TSOS {
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
                     _MMU.moveToAddr(parseInt(memloc,16));
-                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
+                    this.Acc = this.Acc + parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0xA2:
@@ -116,7 +116,7 @@ module TSOS {
                     break;
                 case 0x00:
                     this.isExecuting = false;
-                    _CurPCB.saveCpuState(this);
+                    _CurPCB.saveCpuState();
                     break;
                 case 0xEC:
                     var memloc = "0000";
@@ -125,7 +125,7 @@ module TSOS {
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
                     _MMU.moveToAddr(parseInt(memloc,16));
-                    if(this.Xreg === parseInt(_MMU.valueOfAddress(),16)){
+                    if(this.Xreg == parseInt(_MMU.valueOfAddress(),16)){
                         this.Zflag = 0;
                     }
                     this.Zflag = 1;
@@ -167,11 +167,11 @@ module TSOS {
                 this.fetch();
                 this.decodeAndExecIns();
                 if(!this.isExecuting) {
+                    _StdOut.advanceLine();
                     _StdOut.putText(_CurPCB.toString());
                     _TerminatedQueue.enqueue(_CurPCB);
                 }
             }
-            _CurPCB.saveCpuState(this);
         }
     }
 }

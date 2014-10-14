@@ -129,6 +129,13 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "load";
 
+            // run
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "- <pid> to run a loaded program.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "run";
+
             // processes - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -361,8 +368,12 @@ module TSOS {
                       clearInterval(_hardwareClockID);
                       _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
                       break;
+                   case "step":
+                       _EnableStepMode = true;
+                       Control.hostSingleStepInit();
+                       break;
                    default:
-                      _StdOut.putText("Invalid argument. Usage: overclock <low | normal | high>.");
+                      _StdOut.putText("Invalid argument. Usage: overclock <low | normal | high | step>.");
                       break;
                }
             } else {
@@ -399,22 +410,57 @@ module TSOS {
                         //eliminate spaces
                     } else {
                         _StdOut.putText("Program error not hex at character: " + i + ", " + program[i] + ".");
-                        return 1;
                     }
                     i++;
                 }
                 if(valid.length % 2 !== 0){
                     _StdOut.putText("Error instructions not even.");
-                    return 1;
                 }
             } else {
                 _StdOut.putText("No program.");
-                return 1;
             }
-
             // Add valid program to memory here
-            return 0;
+            _CurPCB = new TSOS.Pcb();
+            _CurPCB.init();
+            _CurPCB.setPcbId(_PID);
+            _CurPCB.setBaseAddress((_PID * _RamBlock )% _RamCapacity );
+            _MMU.setBaseAddr(_CurPCB.getBaseAddress());
+            i = 0;
+            var k = 0;
+            while(i < valid.length -1) {
+                var j = i + 1;
+                _MMU.moveToAddr(k);
+                k = k + 1;
+                _MMU.storeToAddress(valid[i]+valid[j]);
+                i = i + 2;
+            }
+            _StdOut.putText(_CurPCB.getPcbId().toString());
+            _ResidentQueue.enqueue(_CurPCB);
+            _PID = _PID + 1;
         }
 
+        public shellRun(args) {
+            if(args.length < 1){
+                _StdOut.putText("Usage: run <pid>.")
+            }/* else if(args === "all") {
+                for(var i = 0; i < _ResidentQueue.length; i++) {         scheduling needed
+                    _ReadyQueue.enqueue(_ResidentQueue.dequeue());
+                }
+                for(var i = 0; i < _ReadyQueue.length; i++) {
+                }
+            }*/ else {
+                for(var i = 0; i < _ResidentQueue.getSize(); i++){
+                    _CurPCB = _ResidentQueue.dequeue();
+                    if(_CurPCB.Id === parseInt(args[0])) {
+                        _ReadyQueue.enqueue(_CurPCB);
+                        _ReadyQueue.dequeue().restoreCpuState();
+                        _CPU.isExecuting = true;
+                        return;
+                    }
+                   _ResidentQueue.enqueue(_CurPCB);
+                }
+                _StdOut.putText("No program to run at designated pid.");
+            }
+        }
     }
 }

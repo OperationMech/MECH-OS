@@ -44,7 +44,7 @@ var TSOS;
             return this.Id;
         };
 
-        Pcb.prototype.saveCpuState = function (CPU) {
+        Pcb.prototype.saveCpuState = function () {
             this.PC = _CPU.PC;
             this.Acc = _CPU.Acc;
             this.Xreg = _CPU.Xreg;
@@ -53,7 +53,7 @@ var TSOS;
             this.Zflag = _CPU.Zflag;
         };
 
-        Pcb.prototype.restoreCpuState = function (CPU) {
+        Pcb.prototype.restoreCpuState = function () {
             _CPU.PC = this.PC;
             _CPU.Acc = this.Acc;
             _CPU.Xreg = this.Xreg;

@@ -37,6 +37,10 @@ var _OSclock: number = 0;  // Page 23.
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
+var _STEP = false;       // Step 1 clock pulse when true.
+
+var _EnableStepMode = false; // Single Step execution mode switch.
+
 
 var _Canvas: HTMLCanvasElement = null;  // Initialized in hostInit().
 var _bCanvas: HTMLCanvasElement = null; // Initialized in hostInit().
@@ -45,6 +49,8 @@ var _bContext = null;                   // Initialized in hostInit().
 var _DefaultFontFamily = "system";      // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;              // Additional space added to font size when advancing a line.
+var _CpuArea: HTMLTableElement = null;
+var _MemoryArea: HTMLTableElement = null;
 
 
 var _Trace: boolean = true;  // Default the OS trace to be on.
@@ -73,7 +79,8 @@ var _MA: TSOS.MemAlloc;
 var _MMU: TSOS.Mmu;
 
 // Active Process control block
-var _CurPCB: TSOS.Pcb = null;
+var _CurPCB: TSOS.Pcb;
+var _PID: number = 1; // PID 0 = kernel so not usable.
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;

@@ -40,11 +40,13 @@ module TSOS {
 
         public toString(): string[][] {
             var i = 0;
-            var output = [];
-            while(i < _RamCapacity % 16){
+            var output = new Array(_RamCapacity / 16 -1);
+            var modRam = _RamCapacity / 16;
+            while(i < modRam){
+                output[i] = new Array(15);
                 var j = 0;
                 while(j < 16){
-                    output[i][j] = this.readLoc((i*16)+j).toString();
+                    output[i][j] = this.readLoc((i*16)+j);
                     j = j + 1;
                 }
                 i = i + 1;

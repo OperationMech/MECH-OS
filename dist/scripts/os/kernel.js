@@ -93,6 +93,10 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) {
                 _CPU.cycle();
+
+                // Printing functions
+                TSOS.Control.hostMemory();
+                TSOS.Control.hostCpu();
             } else {
                 this.krnTrace("Idle");
             }
@@ -128,6 +132,10 @@ var TSOS;
                     break;
                 case CPU_IRQ:
                     this.krnTrapErrorSoftfalt("CPU error detected. irq=" + irq + " params=[" + params + "]");
+                    _StdOut.advanceLine();
+                    _StdOut.putText(_CurPCB.toString);
+                    _StdOut.advanceLine();
+                    _TerminatedQueue.enqueue(_CurPCB);
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -171,9 +179,11 @@ var TSOS;
                         _MMU.moveToAddr(i);
                     }
                     _StdOut.putText(strOut);
+                    _StdOut.advanceLine();
                     break;
                 default:
-                    _StdOut.putText(val);
+                    _StdOut.putText(val.toString());
+                    _StdOut.advanceLine();
             }
         };
 
@@ -203,7 +213,6 @@ var TSOS;
             if (_CPU.isExecuting) {
                 _CPU.isExecuting = false;
             }
-            // Process killed
         };
 
         Kernel.prototype.krnTrapErrorSysfault = function (msg) {

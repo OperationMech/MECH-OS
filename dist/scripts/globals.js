@@ -34,6 +34,10 @@ var _OSclock = 0;
 
 var _Mode = 0;
 
+var _STEP = false;
+
+var _EnableStepMode = false;
+
 var _Canvas = null;
 var _bCanvas = null;
 var _DrawingContext = null;
@@ -41,6 +45,8 @@ var _bContext = null;
 var _DefaultFontFamily = "system";
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;
+var _CpuArea = null;
+var _MemoryArea = null;
 
 var _Trace = true;
 
@@ -68,7 +74,8 @@ var _MA;
 var _MMU;
 
 // Active Process control block
-var _CurPCB = null;
+var _CurPCB;
+var _PID = 1;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode = false;

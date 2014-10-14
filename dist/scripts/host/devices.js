@@ -27,7 +27,14 @@ var TSOS;
             _OSclock++;
 
             // Call the kernel clock pulse event handler.
-            _Kernel.krnOnCPUClockPulse();
+            if (!_EnableStepMode && !_STEP) {
+                _Kernel.krnOnCPUClockPulse();
+            } else if (_EnableStepMode && _STEP) {
+                _Kernel.krnOnCPUClockPulse();
+                _STEP = false;
+            } else {
+                // do nothing
+            }
         };
 
         //

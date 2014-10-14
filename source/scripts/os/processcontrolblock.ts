@@ -40,7 +40,7 @@ module TSOS{
             return this.Id;
         }
 
-        public saveCpuState(CPU: TSOS.Cpu): void {
+        public saveCpuState(): void {
             this.PC    = _CPU.PC;
             this.Acc   = _CPU.Acc;
             this.Xreg  = _CPU.Xreg;
@@ -49,7 +49,7 @@ module TSOS{
             this.Zflag = _CPU.Zflag;
     }
 
-        public restoreCpuState(CPU: TSOS.Cpu): void{
+        public restoreCpuState(): void{
             _CPU.PC    = this.PC;
             _CPU.Acc   = this.Acc;
             _CPU.Xreg  = this.Xreg;
