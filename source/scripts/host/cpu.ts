@@ -58,7 +58,8 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    this.Acc = parseInt(memloc, 16);
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0x8D:
@@ -120,6 +121,7 @@ module TSOS {
                     break;
                 case 0xEC:
                     var memloc = "0000";
+                    var mem;
                     _MMU.moveToAddr(this.PC + 1);
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
