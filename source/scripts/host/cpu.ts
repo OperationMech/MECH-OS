@@ -46,10 +46,10 @@ module TSOS {
         }
 
         public decodeAndExecIns(): void {
-            switch(this.Ireg){
+            switch(this.Ireg) {
                 case 0xA9:
                     _MMU.moveToAddr(this.PC);
-                    this.Acc = parseInt(_MMU.valueOfAddress(),16);
+                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 1;
                     break;
                 case 0xAD:
@@ -58,7 +58,7 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    this.Acc = parseInt(memloc,16);
+                    this.Acc = parseInt(memloc, 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0x8D:
@@ -67,7 +67,7 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    _MMU.moveToAddr(parseInt(memloc,16));
+                    _MMU.moveToAddr(parseInt(memloc, 16));
                     _MMU.storeToAddress(this.Acc.toString(16));
                     this.PC = this.PC + 2;
                     break;
@@ -77,13 +77,13 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    _MMU.moveToAddr(parseInt(memloc,16));
+                    _MMU.moveToAddr(parseInt(memloc, 16));
                     this.Acc = this.Acc + parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0xA2:
                     _MMU.moveToAddr(this.PC);
-                    this.Xreg = parseInt(_MMU.valueOfAddress(),16);
+                    this.Xreg = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 1;
                     break;
                 case 0xAE:
@@ -92,13 +92,13 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    _MMU.moveToAddr(parseInt(memloc,16));
+                    _MMU.moveToAddr(parseInt(memloc, 16));
                     this.Xreg = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0xA0:
                     _MMU.moveToAddr(this.PC);
-                    this.Yreg = parseInt(_MMU.valueOfAddress(),16);
+                    this.Yreg = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 1;
                     break;
                 case 0xAC:
@@ -107,12 +107,12 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    _MMU.moveToAddr(parseInt(memloc,16));
+                    _MMU.moveToAddr(parseInt(memloc, 16));
                     this.Yreg = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0xEA:
-                    this.PC = this.PC+1;
+                    this.PC = this.PC + 1;
                     break;
                 case 0x00:
                     this.isExecuting = false;
@@ -124,11 +124,12 @@ module TSOS {
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    _MMU.moveToAddr(parseInt(memloc,16));
-                    if(this.Xreg == parseInt(_MMU.valueOfAddress(),16)){
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    if (this.Xreg == parseInt(_MMU.valueOfAddress(), 16)) {
                         this.Zflag = 0;
+                    } else {
+                        this.Zflag = 1;
                     }
-                    this.Zflag = 1;
                     this.PC = this.PC +2;
                     break;
                 case 0xD0:
