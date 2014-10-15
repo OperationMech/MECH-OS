@@ -19,7 +19,7 @@ var TSOS;
             if (typeof Xreg === "undefined") { Xreg = 0; }
             if (typeof Yreg === "undefined") { Yreg = 0; }
             if (typeof Ireg === "undefined") { Ireg = 0; }
-            if (typeof Zflag === "undefined") { Zflag = 1; }
+            if (typeof Zflag === "undefined") { Zflag = 0; }
             if (typeof isExecuting === "undefined") { isExecuting = false; }
             this.PC = PC;
             this.Acc = Acc;
@@ -35,7 +35,7 @@ var TSOS;
             this.Xreg = 0;
             this.Yreg = 0;
             this.Ireg = 0;
-            this.Zflag = 1;
+            this.Zflag = 0;
             this.isExecuting = false;
         };
 
@@ -58,7 +58,8 @@ var TSOS;
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
-                    this.Acc = parseInt(memloc, 16);
+                    _MMU.moveToAddr(parseInt(memloc, 16));
+                    this.Acc = parseInt(_MMU.valueOfAddress(), 16);
                     this.PC = this.PC + 2;
                     break;
                 case 0x8D:
@@ -120,15 +121,17 @@ var TSOS;
                     break;
                 case 0xEC:
                     var memloc = "0000";
+                    var mem;
                     _MMU.moveToAddr(this.PC + 1);
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
                     _MMU.moveToAddr(parseInt(memloc, 16));
-                    if (this.Xreg == parseInt(_MMU.valueOfAddress(), 16)) {
+                    if (this.Xreg === parseInt(_MMU.valueOfAddress(), 16)) {
+                        this.Zflag = 1;
+                    } else {
                         this.Zflag = 0;
                     }
-                    this.Zflag = 1;
                     this.PC = this.PC + 2;
                     break;
                 case 0xD0:

@@ -24,7 +24,7 @@ module TSOS {
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Ireg: number = 0,
-                    public Zflag: number = 1,
+                    public Zflag: number = 0,
                     public isExecuting: boolean = false) {
 
         }
@@ -35,7 +35,7 @@ module TSOS {
             this.Xreg = 0;
             this.Yreg = 0;
             this.Ireg = 0;
-            this.Zflag = 1;
+            this.Zflag = 0;
             this.isExecuting = false;
         }
 
@@ -127,17 +127,17 @@ module TSOS {
                     _MMU.moveToAddr(this.PC);
                     memloc = memloc + _MMU.valueOfAddress();
                     _MMU.moveToAddr(parseInt(memloc, 16));
-                    if (this.Xreg == parseInt(_MMU.valueOfAddress(), 16)) {
-                        this.Zflag = 0;
-                    } else {
+                    if (this.Xreg === parseInt(_MMU.valueOfAddress(), 16)) {
                         this.Zflag = 1;
+                    } else {
+                        this.Zflag = 0;
                     }
-                    this.PC = this.PC +2;
+                    this.PC = this.PC + 2;
                     break;
                 case 0xD0:
                     _MMU.moveToAddr(this.PC);
-                    if(this.Zflag === 0){
-                        this.PC = this.PC + parseInt(_MMU.valueOfAddress(),16);
+                    if (this.Zflag === 0) {
+                        this.PC = this.PC + parseInt(_MMU.valueOfAddress(), 16);
                     } else {
                         this.PC = this.PC + 1;
                     }

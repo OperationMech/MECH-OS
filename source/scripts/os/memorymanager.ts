@@ -25,14 +25,14 @@ module TSOS {
         }
 
         public valueOfAddress(): string {
-           if(_MA.readLoc(this.address + this.baseAddr) === "0x100"){
+           if(_MA.readLoc(this.address) === "0x100"){
                return "00";
            }
-           return _MA.readLoc(this.address + this.baseAddr);
+           return _MA.readLoc(this.address);
         }
 
         public storeToAddress(storeS: string): void {
-            _MA.writeLoc(this.address + this.baseAddr, storeS);
+            _MA.writeLoc(this.address, storeS);
         }
 
         public eraseMemory(): void{
@@ -40,7 +40,7 @@ module TSOS {
         }
 
         public moveToAddr(offset): void {
-           this.address = (offset % _RamBlock) + this.baseAddr;
+           this.address = (offset %(_RamBlock-1)) + this.baseAddr;
         }
     }
 }

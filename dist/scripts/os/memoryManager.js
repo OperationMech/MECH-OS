@@ -23,14 +23,14 @@ var TSOS;
         };
 
         Mmu.prototype.valueOfAddress = function () {
-            if (_MA.readLoc(this.address + this.baseAddr) === "0x100") {
+            if (_MA.readLoc(this.address) === "0x100") {
                 return "00";
             }
-            return _MA.readLoc(this.address + this.baseAddr);
+            return _MA.readLoc(this.address);
         };
 
         Mmu.prototype.storeToAddress = function (storeS) {
-            _MA.writeLoc(this.address + this.baseAddr, storeS);
+            _MA.writeLoc(this.address, storeS);
         };
 
         Mmu.prototype.eraseMemory = function () {
@@ -38,7 +38,7 @@ var TSOS;
         };
 
         Mmu.prototype.moveToAddr = function (offset) {
-            this.address = (offset % _RamBlock) + this.baseAddr;
+            this.address = (offset % (_RamBlock - 1)) + this.baseAddr;
         };
         return Mmu;
     })();
