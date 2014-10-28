@@ -113,7 +113,6 @@ var TSOS;
                     this.PC = this.PC + 2;
                     break;
                 case 0xEA:
-                    this.PC = this.PC + 1;
                     break;
                 case 0x00:
                     this.isExecuting = false;
@@ -121,7 +120,6 @@ var TSOS;
                     break;
                 case 0xEC:
                     var memloc = "0000";
-                    var mem;
                     _MMU.moveToAddr(this.PC + 1);
                     memloc = _MMU.valueOfAddress();
                     _MMU.moveToAddr(this.PC);
@@ -137,7 +135,7 @@ var TSOS;
                 case 0xD0:
                     _MMU.moveToAddr(this.PC);
                     if (this.Zflag === 0) {
-                        this.PC = this.PC + parseInt(_MMU.valueOfAddress(), 16);
+                        this.PC = (this.PC + parseInt(_MMU.valueOfAddress(), 16)) % (_RamBlock - 1);
                     } else {
                         this.PC = this.PC + 1;
                     }
@@ -154,7 +152,6 @@ var TSOS;
                     break;
                 case 0xFF:
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(SW_IRQ, "software syscall"));
-                    this.PC = this.PC + 1;
                     break;
                 default:
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CPU_IRQ, "Unknown instruction: " + this.Ireg.toString(16) + "."));

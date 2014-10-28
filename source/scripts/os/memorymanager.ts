@@ -40,7 +40,12 @@ module TSOS {
         }
 
         public moveToAddr(offset): void {
-           this.address = (offset %(_RamBlock-1)) + this.baseAddr;
+           if(offset >= _RamBlock)
+           {
+               _KernelInterruptQueue.enqueue(new Interrupt(CPU_IRQ, "Execution memory pool error."));
+           } else {
+               this.address = offset + this.baseAddr;
+           }
         }
     }
 }

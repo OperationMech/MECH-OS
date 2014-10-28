@@ -38,7 +38,11 @@ var TSOS;
         };
 
         Mmu.prototype.moveToAddr = function (offset) {
-            this.address = (offset % (_RamBlock - 1)) + this.baseAddr;
+            if (offset >= _RamBlock) {
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CPU_IRQ, "Execution memory pool error."));
+            } else {
+                this.address = offset + this.baseAddr;
+            }
         };
         return Mmu;
     })();
