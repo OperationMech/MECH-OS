@@ -101,7 +101,7 @@ module TSOS {
                               "<td>Yreg|</td>" +
                               "<td>Zflag</td></tr>";
             var string_row2 = "<tr>" +
-                              "<td>&nbsp" + (_CPU.PC % 0xFF).toString(16) + "|<\/td>" +
+                              "<td>&nbsp" + _CPU.PC.toString(16) + "|<\/td>" +
                               "<td>&nbsp" + _CPU.Ireg.toString(16) + "|<\/td>" +
                               "<td>&nbsp" + _CPU.Acc.toString(16) + "|<\/td>" +
                               "<td>&nbsp" + _CPU.Xreg.toString(16) + "|<\/td>" +

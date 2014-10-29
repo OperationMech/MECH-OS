@@ -174,7 +174,7 @@ var TSOS;
                     var strOut = "";
                     _MMU.moveToAddr(i);
                     while (_MMU.valueOfAddress() != "00" && i < 0x100) {
-                        strOut[i] = _MMU.valueOfAddress();
+                        strOut = strOut + String.fromCharCode(parseInt(_MMU.valueOfAddress(), 16));
                         i = i + 1;
                         _MMU.moveToAddr(i);
                     }

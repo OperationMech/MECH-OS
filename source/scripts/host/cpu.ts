@@ -133,9 +133,9 @@ module TSOS {
                     this.PC = this.PC + 2;
                     break;
                 case 0xD0:
-                    _MMU.moveToAddr(this.PC);
                     if (this.Zflag === 0) {
-                        this.PC = (this.PC + parseInt(_MMU.valueOfAddress(), 16)) % (_RamBlock-1);
+                        _MMU.moveToAddr(this.PC);
+                        this.PC = (this.PC + 1 + parseInt(_MMU.valueOfAddress(), 16)) % (_RamBlock);
                     } else {
                         this.PC = this.PC + 1;
                     }
