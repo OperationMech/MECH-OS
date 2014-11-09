@@ -68,6 +68,14 @@ module TSOS {
             document.getElementById("btnStepExit").disabled = false;
         }
 
+        public static hostPCB(): void {
+
+        }
+
+        public static hostQueues(): void {
+
+        }
+
         public static hostMemory(): void {
             var memory = _MA.toString();
             var i = 0;
