@@ -167,9 +167,10 @@ var TSOS;
                 this.fetch();
                 this.decodeAndExecIns();
                 if (!this.isExecuting) {
-                    _StdOut.advanceLine();
-                    _StdOut.putText(_CurPCB.toString());
                     _TerminatedQueue.enqueue(_CurPCB);
+                    _CurPCB = null;
+                    _CurSchedulerClock = 0;
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(TIMER_IRQ, "Schedule check"));
                 }
             }
         };

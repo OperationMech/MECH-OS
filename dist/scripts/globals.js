@@ -68,13 +68,17 @@ var _Console;
 var _OsShell;
 
 // Memory
-var _RamCapacity = 0x100;
+var _RamCapacity = 0x300;
 var _RamBlock = 0x100;
 var _MA;
 var _MMU;
 
+// Scheduler
+var _SchedulerClockLimit = 6;
+var _CurSchedulerClock = 0;
+
 // Active Process control block
-var _CurPCB;
+var _CurPCB = null;
 var _PID = 1;
 
 // At least this OS is not trying to kill you. (Yet.)

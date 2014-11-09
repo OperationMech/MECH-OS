@@ -95,6 +95,8 @@ var TSOS;
                 _CPU.cycle();
 
                 // Printing functions
+                //Control.hostPCB();
+                //Control.hostQueues();
                 TSOS.Control.hostMemory();
                 TSOS.Control.hostCpu();
             } else {

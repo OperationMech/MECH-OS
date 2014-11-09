@@ -66,29 +66,32 @@ var TSOS;
         Control.hostMemory = function () {
             var memory = _MA.toString();
             var i = 0;
-            var string = "";
+            var mstring = "";
             while (i < memory.length) {
                 var j = 0;
                 if (i === 0) {
-                    string = "<tr><td>0x000</td>";
+                    mstring = " <table><tr><td>0x000<\/td>";
+                } else if (i * 16 < 0x100) {
+                    mstring = mstring + "<tr><td>0x0" + (i * 16).toString(16) + "<\/td>";
                 } else {
-                    string = string + "<tr><td>0x0" + (i * 16).toString(16) + "</td>";
+                    mstring = mstring + "<tr><td>0x" + (i * 16).toString(16) + "<\/td>";
                 }
                 while (j < memory[i].length) {
                     if (j === memory[i].length - 1) {
-                        string = string + "<td>" + memory[i][j] + "</td></tr>";
+                        mstring = mstring + "<td>" + memory[i][j] + "<\/td><\/tr>";
                     } else {
-                        string = string + "<td>" + memory[i][j] + "</td>";
+                        mstring = mstring + "<td>" + memory[i][j] + "<\/td>";
                     }
                     j = j + 1;
                 }
                 i = i + 1;
             }
-            _MemoryArea.innerHTML = string;
+            mstring = mstring + "<\/table>";
+            _MemoryArea.innerHTML = mstring;
         };
 
         Control.hostCpu = function () {
-            var string_row1 = "<tr>" + "<td>PC|</td>" + "<td>Ireg|</td>" + "<td>Acc|</td>" + "<td>Xreg|</td>" + "<td>Yreg|</td>" + "<td>Zflag</td></tr>";
+            var string_row1 = "<tr>" + "<td>PC|<\/td>" + "<td>Ireg|<\/td>" + "<td>Acc|<\/td>" + "<td>Xreg|<\/td>" + "<td>Yreg|<\/td>" + "<td>Zflag<\/td><\/tr>";
             var string_row2 = "<tr>" + "<td>&nbsp" + _CPU.PC.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Ireg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Acc.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Xreg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Yreg.toString(16) + "|<\/td>" + "<td>&nbsp" + _CPU.Zflag.toString(16) + "<\/td>" + "<\/tr>";
             _CpuArea.innerHTML = string_row1 + string_row2;
         };

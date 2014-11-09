@@ -73,13 +73,17 @@ var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 
 // Memory
-var _RamCapacity = 0x100;
+var _RamCapacity = 0x300;
 var _RamBlock = 0x100;
 var _MA: TSOS.MemAlloc;
 var _MMU: TSOS.Mmu;
 
+// Scheduler
+var _SchedulerClockLimit: number = 6;
+var _CurSchedulerClock: number = 0;
+
 // Active Process control block
-var _CurPCB: TSOS.Pcb;
+var _CurPCB: TSOS.Pcb = null;
 var _PID: number = 1; // PID 0 = kernel so not usable.
 
 // At least this OS is not trying to kill you. (Yet.)
