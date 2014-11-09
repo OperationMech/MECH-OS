@@ -176,6 +176,8 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();
+            this.hostPCB();
+            this.hostQueues();
         }
 
         public static hostBtnHaltOS_click(btn): void {

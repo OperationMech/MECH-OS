@@ -157,6 +157,8 @@ var TSOS;
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap();
+            this.hostPCB();
+            this.hostQueues();
         };
 
         Control.hostBtnHaltOS_click = function (btn) {

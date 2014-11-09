@@ -79,7 +79,7 @@ var _SchedulerClockLimit = 6;
 var _CurSchedulerClock = 0;
 
 // Active Process control block
-var _CurPCB = null;
+var _CurPCB = new TSOS.Pcb;
 var _PID = 1;
 
 // At least this OS is not trying to kill you. (Yet.)

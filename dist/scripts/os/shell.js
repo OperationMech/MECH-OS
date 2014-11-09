@@ -390,11 +390,11 @@ var TSOS;
             }
 
             // Add valid program to memory here
-            _CurPCB = new TSOS.Pcb();
             _CurPCB.init();
             _CurPCB.setPcbId(_PID);
             _MMU.blockStored();
             _MMU.setBaseAddr();
+            _MMU.eraseBlock();
             _CurPCB.setBaseAddress(_MMU.getBaseAddr());
             i = 0;
             var k = 0;

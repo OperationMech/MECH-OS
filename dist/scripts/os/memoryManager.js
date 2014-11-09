@@ -48,6 +48,12 @@ var TSOS;
             _MA.writeLoc(this.address, storeS);
         };
 
+        Mmu.prototype.eraseBlock = function () {
+            for (var i = 0 + this.baseAddr; i < this.baseAddr + _RamBlock; i++) {
+                _MA.writeLoc(i, "00");
+            }
+        };
+
         Mmu.prototype.eraseMemory = function () {
             _MA.clear();
         };

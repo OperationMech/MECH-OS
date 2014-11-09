@@ -84,7 +84,7 @@ var _SchedulerClockLimit: number = 6;
 var _CurSchedulerClock: number = 0;
 
 // Active Process control block
-var _CurPCB: TSOS.Pcb = null;
+var _CurPCB = new TSOS.Pcb;
 var _PID: number = 1; // PID 0 = kernel so not usable.
 
 // At least this OS is not trying to kill you. (Yet.)

@@ -49,6 +49,12 @@ module TSOS {
             _MA.writeLoc(this.address, storeS);
         }
 
+        public eraseBlock(): void {
+            for(var i = 0 + this.baseAddr; i < this.baseAddr +_RamBlock; i++){
+                _MA.writeLoc(i,"00");
+            }
+        }
+
         public eraseMemory(): void{
             _MA.clear();
         }
