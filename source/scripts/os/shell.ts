@@ -423,8 +423,9 @@ module TSOS {
             _CurPCB = new TSOS.Pcb();
             _CurPCB.init();
             _CurPCB.setPcbId(_PID);
-            _CurPCB.setBaseAddress((_PID * _RamBlock )% _RamCapacity );
-            _MMU.setBaseAddr(_CurPCB.getBaseAddress());
+            _MMU.blockStored();
+            _MMU.setBaseAddr();
+            _CurPCB.setBaseAddress(_MMU.getBaseAddr());
             i = 0;
             var k = 0;
             while(i < valid.length -1) {
@@ -434,30 +435,32 @@ module TSOS {
                 _MMU.storeToAddress(valid[i]+valid[j]);
                 i = i + 2;
             }
-            _StdOut.putText(_CurPCB.getPcbId().toString());
+            _StdOut.putText("PID: " + _CurPCB.getPcbId().toString());
             _ResidentQueue.enqueue(_CurPCB);
+            _CurPCB.init();
             _PID = _PID + 1;
         }
 
         public shellRun(args) {
             if(args.length < 1){
-                _StdOut.putText("Usage: run <pid>.")
-            }/* else if(args === "all") {
-                for(var i = 0; i < _ResidentQueue.length; i++) {         scheduling needed
+                _StdOut.putText("Usage: run <pid | 'all'>.")
+            } else if(args === "all") {
+                for(var i = 0; i < _ResidentQueue.length; i++) {
                     _ReadyQueue.enqueue(_ResidentQueue.dequeue());
                 }
-                for(var i = 0; i < _ReadyQueue.length; i++) {
-                }
-            }*/ else {
+                _CurPCB = _ReadyQueue.dequeue();
+                _CurPCB.restoreCpuState();
+                _CPU.isExecuting = true;
+            } else {
                 for(var i = 0; i < _ResidentQueue.getSize(); i++){
                     _CurPCB = _ResidentQueue.dequeue();
                     if(_CurPCB.Id === parseInt(args[0])) {
-                        _ReadyQueue.enqueue(_CurPCB);
-                        _ReadyQueue.dequeue().restoreCpuState();
+                        _CurPCB.restoreCpuState();
                         _CPU.isExecuting = true;
                         return;
+                    }else {
+                        _ResidentQueue.enqueue(_CurPCB);
                     }
-                   _ResidentQueue.enqueue(_CurPCB);
                 }
                 _StdOut.putText("No program to run at designated pid.");
             }

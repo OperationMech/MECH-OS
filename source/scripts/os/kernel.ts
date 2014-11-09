@@ -97,10 +97,15 @@ module TSOS {
             } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed.
                 _CPU.cycle();
                 // Printing functions
-                //Control.hostPCB();
-                //Control.hostQueues();
+                Control.hostPCB();
+                Control.hostQueues();
                 Control.hostMemory();
                 Control.hostCpu();
+                if(_CurSchedulerClock > _SchedulerClockLimit - 1 && _ReadyQueue.size() > 0 && _CurSchedulerMode <= 1 ){
+                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Scheduler dispatch: context switch"));
+                }else {
+                    _CurSchedulerClock = (_CurSchedulerClock + 1) % _SchedulerClockLimit;
+                }
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
             }
@@ -141,10 +146,9 @@ module TSOS {
                     break;
                 case CPU_IRQ:
                     this.krnTrapErrorSoftfalt("CPU error detected. irq=" + irq + " params=[" + params +"]");
-                    _StdOut.advanceLine();
-                    _StdOut.putText(_CurPCB.toString);
-                    _StdOut.advanceLine();
+                    Control.hostPCB();
                     _TerminatedQueue.enqueue(_CurPCB);
+                    _CurPCB.init();
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -160,6 +164,16 @@ module TSOS {
         public krnTimerISR() {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
+            this.krnTrace("Context Switch in progress");
+            _CurPCB.saveCpuState();
+            Control.hostPCB();
+            _ReadyQueue.enqueue(_CurPCB);
+            Control.hostQueues();
+            _CurPCB = _ReadyQueue.dequeue();
+            Control.hostQueues();
+            Control.hostPCB();
+            _CurPCB.restoreCpuState();
+            _CurSchedulerClock = 0;
         }
 
         //

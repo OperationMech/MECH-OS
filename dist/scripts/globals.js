@@ -74,6 +74,7 @@ var _MA;
 var _MMU;
 
 // Scheduler
+var _CurSchedulerMode = 0;
 var _SchedulerClockLimit = 6;
 var _CurSchedulerClock = 0;
 

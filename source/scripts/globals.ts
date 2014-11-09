@@ -79,6 +79,7 @@ var _MA: TSOS.MemAlloc;
 var _MMU: TSOS.Mmu;
 
 // Scheduler
+var _CurSchedulerMode: number = 0;
 var _SchedulerClockLimit: number = 6;
 var _CurSchedulerClock: number = 0;
 

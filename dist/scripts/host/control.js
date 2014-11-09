@@ -63,6 +63,12 @@ var TSOS;
             document.getElementById("btnStepExit").disabled = false;
         };
 
+        Control.hostPCB = function () {
+        };
+
+        Control.hostQueues = function () {
+        };
+
         Control.hostMemory = function () {
             var memory = _MA.toString();
             var i = 0;
