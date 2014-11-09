@@ -10,7 +10,7 @@ Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var APP_NAME = "MECH-OS";
-var APP_VERSION = "0.16(007)";
+var APP_VERSION = "0.24(007)";
 
 var CPU_CLOCK_INTERVAL = 100;
 
@@ -79,7 +79,7 @@ var _SchedulerClockLimit = 6;
 var _CurSchedulerClock = 0;
 
 // Active Process control block
-var _CurPCB = new TSOS.Pcb;
+var _CurPCB = null;
 var _PID = 1;
 
 // At least this OS is not trying to kill you. (Yet.)

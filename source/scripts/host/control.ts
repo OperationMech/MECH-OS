@@ -45,7 +45,7 @@ module TSOS {
             (<HTMLDivElement> document.getElementById("taHostLog")).textContent = "";
             (<HTMLDivElement> document.getElementById("taTime")).textContent = "";
             _CpuArea = <HTMLTableElement>document.getElementById("taCpu");
-            _MemoryArea = <HTMLTableElement>document.getElementById("taMemoryArea");
+            _MemoryArea = <HTMLDivElement>document.getElementById("taMemoryArea");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -165,6 +165,7 @@ module TSOS {
             _MA = new MemAlloc(new Memory());
             _MA.init();
 
+
             // ... Create and initialize the CPU (because it's part of the hardware)  ...
             _CPU = new Cpu();
             _CPU.init();
@@ -176,8 +177,6 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();
-            this.hostPCB();
-            this.hostQueues();
         }
 
         public static hostBtnHaltOS_click(btn): void {

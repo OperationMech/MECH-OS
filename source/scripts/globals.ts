@@ -13,7 +13,7 @@
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var APP_NAME: string    = "MECH-OS";   // A better name.
-var APP_VERSION: string = "0.16(007)"; // Changed this to reflect actual version.
+var APP_VERSION: string = "0.24(007)"; // Changed this to reflect actual version.
 
 var CPU_CLOCK_INTERVAL: number = 100;   // This is in ms, or milliseconds, so 1000 = 1 second.
 
@@ -50,7 +50,7 @@ var _DefaultFontFamily = "system";      // Ignored, I think. The was just a plac
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;              // Additional space added to font size when advancing a line.
 var _CpuArea: HTMLTableElement = null;
-var _MemoryArea: HTMLTableElement = null;
+var _MemoryArea: HTMLDivElement = null;
 
 
 var _Trace: boolean = true;  // Default the OS trace to be on.
@@ -84,7 +84,7 @@ var _SchedulerClockLimit: number = 6;
 var _CurSchedulerClock: number = 0;
 
 // Active Process control block
-var _CurPCB = new TSOS.Pcb;
+var _CurPCB: TSOS.Pcb = null;
 var _PID: number = 1; // PID 0 = kernel so not usable.
 
 // At least this OS is not trying to kill you. (Yet.)

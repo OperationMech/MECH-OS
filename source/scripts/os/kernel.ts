@@ -18,6 +18,10 @@ module TSOS {
         public krnBootstrap() {      // Page 8. {
             Control.hostLog("bootstrap", "host");  // Use hostLog because we ALWAYS want this, even if _Trace is off.
 
+            //Initialize the active PCB
+            _CurPCB = new TSOS.Pcb();
+            _CurPCB.init();
+
             // Initialize the MMU
             _MMU = new TSOS.Mmu();
             _MMU.init();
