@@ -424,24 +424,25 @@ var TSOS;
         };
 
         Shell.prototype.shellRun = function (args) {
+            var localPCB;
             if (args.length < 1) {
                 _StdOut.putText("Usage: run <pid | 'all'>.");
             } else if (args === "all") {
                 for (var i = 0; i < _ResidentQueue.length; i++) {
                     _ReadyQueue.enqueue(_ResidentQueue.dequeue());
                 }
-                _CurPCB = _ReadyQueue.dequeue();
-                _CurPCB.restoreCpuState();
+                localPCB = _ReadyQueue.dequeue();
+                localPCB.restoreCpuState();
                 _CPU.isExecuting = true;
             } else {
                 for (var i = 0; i < _ResidentQueue.getSize(); i++) {
-                    _CurPCB = _ResidentQueue.dequeue();
+                    localPCB = _ResidentQueue.dequeue();
                     if (_CurPCB.Id === parseInt(args[0])) {
-                        _CurPCB.restoreCpuState();
+                        localPCB.restoreCpuState();
                         _CPU.isExecuting = true;
                         return;
                     } else {
-                        _ResidentQueue.enqueue(_CurPCB);
+                        _ResidentQueue.enqueue(localPCB);
                     }
                 }
                 _StdOut.putText("No program to run at designated pid.");

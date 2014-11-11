@@ -156,6 +156,7 @@ module TSOS {
                     _TerminatedQueue.enqueue(_CurPCB);
                     _MMU.blockReleased(_CurPCB.getBaseAddress());
                     _CurPCB.init();
+                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ, "Check schedule for other processes."))
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -172,15 +173,27 @@ module TSOS {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
             this.krnTrace("Context Switch in progress");
-            _CurPCB.saveCpuState();
-            Control.hostPCB();
-            _ReadyQueue.enqueue(_CurPCB);
-            Control.hostQueues();
-            _CurPCB = _ReadyQueue.dequeue();
-            Control.hostQueues();
-            Control.hostPCB();
-            _CurPCB.restoreCpuState();
-            _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+            if(!_CPU.isExecuting && _ReadyQueue.length > 0) {
+                _CurPCB = _ReadyQueue.dequeue();
+                Control.hostQueues();
+                Control.hostPCB();
+                _CurPCB.restoreCpuState();
+                _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+                _CPU.isExecuting = true;
+            } else if(_ReadyQueue.length > 0) {
+                _CurPCB.saveCpuState();
+                Control.hostPCB();
+                _ReadyQueue.enqueue(_CurPCB);
+                Control.hostQueues();
+                _CurPCB = _ReadyQueue.dequeue();
+                Control.hostQueues();
+                Control.hostPCB();
+                _CurPCB.restoreCpuState();
+                _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+            } else {
+                // do nothing in terms of context switch
+            }
+            this.krnTrace("Context Switch done");
             _CurSchedulerClock = 0;
         }
 
