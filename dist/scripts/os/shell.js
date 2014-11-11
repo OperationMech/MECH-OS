@@ -451,6 +451,9 @@ var TSOS;
                     while (0 < _ResidentQueue.getSize()) {
                         _ReadyQueue.enqueue(_ResidentQueue.dequeue());
                     }
+                    if (_CPU.isExecuting) {
+                        return;
+                    }
                     _CurPCB = _ReadyQueue.dequeue();
                     _CurPCB.restoreCpuState();
                     _CPU.isExecuting = true;
