@@ -479,7 +479,7 @@ module TSOS {
         public shellRun(args) {
             var localPCB = new Pcb;
             localPCB.init();
-            if(args.length < 1){
+            if(args.length > 0){
                 _StdOut.putText("Usage: run <pid | 'all'>.")
             } else {
                 if (args[0] === "all") {
@@ -519,7 +519,7 @@ module TSOS {
         }
 
         public shellKillProc(args) {
-            if(args < 1){
+            if(args.length > 0){
                 _StdOut.putText("Usage: kill <pid>.");
             } else {
                 if(_CurPCB.Id === parseInt(args[0])) {
@@ -546,7 +546,7 @@ module TSOS {
         }
 
         public shellQuantum(args) {
-            if(args.length < 1){
+            if(args.length > 0){
                 _SchedulerClockLimit = parseInt(args[0]);
             } else {
                 _StdOut.putText("Usage: quantum <int>.");

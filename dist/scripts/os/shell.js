@@ -440,7 +440,7 @@ var TSOS;
         Shell.prototype.shellRun = function (args) {
             var localPCB = new TSOS.Pcb;
             localPCB.init();
-            if (args.length < 1) {
+            if (args.length > 0) {
                 _StdOut.putText("Usage: run <pid | 'all'>.");
             } else {
                 if (args[0] === "all") {
@@ -480,7 +480,7 @@ var TSOS;
         };
 
         Shell.prototype.shellKillProc = function (args) {
-            if (args < 1) {
+            if (args.length > 0) {
                 _StdOut.putText("Usage: kill <pid>.");
             } else {
                 if (_CurPCB.Id === parseInt(args[0])) {
@@ -507,7 +507,7 @@ var TSOS;
         };
 
         Shell.prototype.shellQuantum = function (args) {
-            if (args.length < 1) {
+            if (args.length > 0) {
                 _SchedulerClockLimit = parseInt(args[0]);
             } else {
                 _StdOut.putText("Usage: quantum <int>.");
