@@ -63,7 +63,7 @@ h3 {
   border-right: 1px solid slategrey;
   border-bottom: 1px solid slategray;
   background-color: whitesmoke;
-  width: 420px;
+  width: 440px;
   height: 200px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -75,7 +75,7 @@ h3 {
     border-right: 1px solid slategrey;
     border-bottom: 1px solid slategray;
     background-color: whitesmoke;
-    width: 420px;
+    width: 440px;
     height: 200px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -97,7 +97,7 @@ h3 {
 .timeArea {
     border:none;
     background-color: whitesmoke;
-    width: 420px;
+    width: 440px;
     height: 20px;
     overflow-x: hidden;
     overflow-y: hidden;
