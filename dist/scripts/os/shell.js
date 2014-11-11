@@ -94,7 +94,7 @@ var TSOS;
             this.commandNames[this.commandNames.length] = "load";
 
             // run
-            sc = new TSOS.ShellCommand(this.shellRun, "run", "- <pid> to run a loaded program.");
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "<pid | 'all'> -Run a loaded program.");
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "run";
 
@@ -104,7 +104,7 @@ var TSOS;
             this.commandNames[this.commandNames.length] = "ps";
 
             // kill <id> - kills the specified process id.
-            sc = new TSOS.ShellCommand(this.shellKillProc, "kill", "- <pid> to kill the process with the specified pid.");
+            sc = new TSOS.ShellCommand(this.shellKillProc, "kill", "<pid> - Kill the process with the specified pid.");
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "kill";
 
@@ -113,7 +113,16 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "clearmem";
 
-            //
+            // quantum - <int> changes the round robin schedule clock ticks;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<int> - Set the scheduler clock ticks to the int specified.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "quantum";
+
+            // runall - wrapper for run all
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Wrapper for run all.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "runall";
+
             // Display the initial prompt.
             this.putPrompt();
         };
@@ -392,22 +401,26 @@ var TSOS;
                         //eliminate spaces
                     } else {
                         _StdOut.putText("Program error not hex at character: " + i + ", " + program[i] + ".");
+                        return;
                     }
                     i++;
                 }
                 if (valid.length % 2 !== 0) {
                     _StdOut.putText("Error instructions not even.");
+                    return;
                 }
             } else {
                 _StdOut.putText("No program.");
+                return;
             }
 
             // Add valid program to memory here
-            _CurPCB.init();
-            _CurPCB.setPcbId(_PID);
+            var localPCB = new TSOS.Pcb;
+            localPCB.init();
+            localPCB.setPcbId(_PID);
             _MMU.blockStored();
             _MMU.eraseBlock();
-            _CurPCB.setBaseAddress(_MMU.getBaseAddr());
+            localPCB.setBaseAddress(_MMU.getBaseAddr());
             i = 0;
             var k = 0;
             while (i < valid.length - 1) {
@@ -417,35 +430,43 @@ var TSOS;
                 _MMU.storeToAddress(valid[i] + valid[j]);
                 i = i + 2;
             }
-            _StdOut.putText("PID: " + _CurPCB.getPcbId().toString());
-            _ResidentQueue.enqueue(_CurPCB);
-            _CurPCB.init();
+            _StdOut.putText("PID: " + localPCB.getPcbId().toString());
+            _ResidentQueue.enqueue(localPCB);
+            TSOS.Control.hostMemory();
+            TSOS.Control.hostQueues();
             _PID = _PID + 1;
         };
 
         Shell.prototype.shellRun = function (args) {
-            var localPCB;
+            var localPCB = new TSOS.Pcb;
+            localPCB.init();
             if (args.length < 1) {
                 _StdOut.putText("Usage: run <pid | 'all'>.");
-            } else if (args === "all") {
-                for (var i = 0; i < _ResidentQueue.length; i++) {
-                    _ReadyQueue.enqueue(_ResidentQueue.dequeue());
-                }
-                localPCB = _ReadyQueue.dequeue();
-                localPCB.restoreCpuState();
-                _CPU.isExecuting = true;
             } else {
-                for (var i = 0; i < _ResidentQueue.getSize(); i++) {
-                    localPCB = _ResidentQueue.dequeue();
-                    if (_CurPCB.Id === parseInt(args[0])) {
-                        localPCB.restoreCpuState();
-                        _CPU.isExecuting = true;
-                        return;
-                    } else {
-                        _ResidentQueue.enqueue(localPCB);
+                if (args[0] === "all") {
+                    while (0 < _ResidentQueue.getSize()) {
+                        _ReadyQueue.enqueue(_ResidentQueue.dequeue());
                     }
+                    _CurPCB = _ReadyQueue.dequeue();
+                    _CurPCB.restoreCpuState();
+                    _CPU.isExecuting = true;
+                } else {
+                    for (var i = 0; i < _ResidentQueue.getSize(); i++) {
+                        localPCB = _ResidentQueue.dequeue();
+                        if (localPCB.Id === parseInt(args[0]) && !_CPU.isExecuting) {
+                            localPCB.restoreCpuState();
+                            _CurPCB = localPCB;
+                            _CPU.isExecuting = true;
+                            return;
+                        } else if (localPCB.Id === parseInt(args[0]) && _CPU.isExecuting) {
+                            _ReadyQueue.enqueue(localPCB);
+                            return;
+                        } else {
+                            _ResidentQueue.enqueue(localPCB);
+                        }
+                    }
+                    _StdOut.putText("No program to run at designated pid.");
                 }
-                _StdOut.putText("No program to run at designated pid.");
             }
         };
 
@@ -453,7 +474,7 @@ var TSOS;
             _StdOut.putText("PIDs running:");
             _StdOut.putText("  0");
             _StdOut.putText("  " + _CurPCB.getPcbId().toString());
-            for (var i = 0; i < _ReadyQueue.length; i++) {
+            for (var i = 0; i < _ReadyQueue.getSize(); i++) {
                 _StdOut.putText("  " + _ReadyQueue.q[i].getPcbId().toString());
             }
         };
@@ -462,11 +483,40 @@ var TSOS;
             if (args < 1) {
                 _StdOut.putText("Usage: kill <pid>.");
             } else {
+                if (_CurPCB.Id === parseInt(args[0])) {
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CPU_IRQ, "Process terminated by user"));
+                } else if (_ReadyQueue > 0) {
+                    var localPCB;
+                    for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                        localPCB = _ReadyQueue.dequeue();
+                        if (parseInt(args[0]) === localPCB.getPcbId()) {
+                            _TerminatedQueue.enqueue(localPCB);
+                        } else {
+                            _ReadyQueue.enqueue(localPCB);
+                        }
+                    }
+                } else {
+                    _StdOut.putText("Pid: " + parseInt(args[0]) + " is not running.");
+                }
             }
         };
 
         Shell.prototype.shellClearMem = function (args) {
             _MMU.eraseMemory();
+            TSOS.Control.hostMemory();
+        };
+
+        Shell.prototype.shellQuantum = function (args) {
+            if (args < 1) {
+                _SchedulerClockLimit = parseInt(args[0]);
+            } else {
+                _StdOut.putText("Usage: quantum <int>.");
+            }
+        };
+        Shell.prototype.shellRunAll = function (args) {
+            var localarr = [];
+            localarr[0] = "all";
+            _OsShell.shellRun(localarr);
         };
         return Shell;
     })();

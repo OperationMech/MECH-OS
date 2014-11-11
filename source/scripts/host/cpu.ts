@@ -168,9 +168,10 @@ module TSOS {
                 this.decodeAndExecIns();
                 if(!this.isExecuting) {
                     _TerminatedQueue.enqueue(_CurPCB);
-                    _CurPCB = null;
+                    _MMU.blockReleased(_CurPCB.getBaseAddress());
                     _CurSchedulerClock = 0;
-                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Schedule check"));
+                    Control.hostPCB();
+                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Scheduler check"));
                 }
             }
         }

@@ -10,9 +10,9 @@ var TSOS;
         function Mmu(baseAddr, address, block0InUse, block1InUse, block2InUse) {
             if (typeof baseAddr === "undefined") { baseAddr = 0; }
             if (typeof address === "undefined") { address = 0; }
-            if (typeof block0InUse === "undefined") { block0InUse = 0; }
-            if (typeof block1InUse === "undefined") { block1InUse = 0; }
-            if (typeof block2InUse === "undefined") { block2InUse = 0; }
+            if (typeof block0InUse === "undefined") { block0InUse = false; }
+            if (typeof block1InUse === "undefined") { block1InUse = false; }
+            if (typeof block2InUse === "undefined") { block2InUse = false; }
             this.baseAddr = baseAddr;
             this.address = address;
             this.block0InUse = block0InUse;
@@ -22,9 +22,9 @@ var TSOS;
         Mmu.prototype.init = function () {
             this.baseAddr = 0;
             this.address = 0;
-            this.block0InUse = 0;
-            this.block1InUse = 0;
-            this.block2InUse = 0;
+            this.block0InUse = false;
+            this.block1InUse = false;
+            this.block2InUse = false;
         };
 
         Mmu.prototype.updateBaseAddr = function (addr) {
@@ -37,13 +37,13 @@ var TSOS;
 
         Mmu.prototype.blockStored = function () {
             if (!this.block0InUse) {
-                this.block0InUse = 1;
+                this.block0InUse = true;
                 this.baseAddr = 0;
             } else if (!this.block1InUse) {
-                this.block1InUse = 1;
+                this.block1InUse = true;
                 this.baseAddr = 0x100;
             } else if (!this.block2InUse) {
-                this.block2InUse = 1;
+                this.block2InUse = true;
                 this.baseAddr = 0x200;
             } else {
                 // call disk IRQ and create swap file
@@ -52,11 +52,11 @@ var TSOS;
 
         Mmu.prototype.blockReleased = function (addr) {
             if (addr === 0x000) {
-                this.block0InUse = 0;
+                this.block0InUse = false;
             } else if (addr === 0x100) {
-                this.block1InUse = 0;
+                this.block1InUse = false;
             } else if (addr === 0x200) {
-                this.block2InUse = 0;
+                this.block2InUse = false;
             } else {
                 // extra case?
             }

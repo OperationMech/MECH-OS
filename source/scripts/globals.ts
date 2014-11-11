@@ -51,6 +51,10 @@ var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;              // Additional space added to font size when advancing a line.
 var _CpuArea: HTMLTableElement = null;
 var _MemoryArea: HTMLDivElement = null;
+var _RunningPcbArea: HTMLDivElement = null;
+var _ReadyQueueArea: HTMLDivElement = null;
+var _ResidentQueueArea: HTMLDivElement = null;
+var _TerminatedQueueArea: HTMLDivElement = null;
 
 
 var _Trace: boolean = true;  // Default the OS trace to be on.

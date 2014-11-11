@@ -103,9 +103,10 @@ var TSOS;
                 TSOS.Control.hostQueues();
                 TSOS.Control.hostMemory();
                 TSOS.Control.hostCpu();
-                if (_CurSchedulerClock > _SchedulerClockLimit - 1 && _ReadyQueue.size() > 0 && _CurSchedulerMode <= 1) {
+                if (_CurSchedulerClock > _SchedulerClockLimit - 2 && _ReadyQueue.getSize() > 0 && _CurSchedulerMode <= 1) {
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(TIMER_IRQ, "Scheduler dispatch: context switch"));
-                } else if (_ReadyQueue.size() > 0) {
+                }
+                if (_ReadyQueue.getSize() > 0) {
                     _CurSchedulerClock = (_CurSchedulerClock + 1) % _SchedulerClockLimit;
                 } else {
                     // do not run a scheduler clock tick; only one process is running
@@ -148,7 +149,7 @@ var TSOS;
                     TSOS.Control.hostPCB();
                     _TerminatedQueue.enqueue(_CurPCB);
                     _MMU.blockReleased(_CurPCB.getBaseAddress());
-                    _CurPCB.init();
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(TIMER_IRQ, "Check schedule for other processes."));
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -165,15 +166,27 @@ var TSOS;
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
             this.krnTrace("Context Switch in progress");
-            _CurPCB.saveCpuState();
-            TSOS.Control.hostPCB();
-            _ReadyQueue.enqueue(_CurPCB);
-            TSOS.Control.hostQueues();
-            _CurPCB = _ReadyQueue.dequeue();
-            TSOS.Control.hostQueues();
-            TSOS.Control.hostPCB();
-            _CurPCB.restoreCpuState();
-            _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+            if (!_CPU.isExecuting && _ReadyQueue.getSize() > 0) {
+                _CurPCB = _ReadyQueue.dequeue();
+                TSOS.Control.hostQueues();
+                TSOS.Control.hostPCB();
+                _CurPCB.restoreCpuState();
+                _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+                _CPU.isExecuting = true;
+            } else if (_ReadyQueue.getSize() > 0) {
+                _CurPCB.saveCpuState();
+                TSOS.Control.hostPCB();
+                _ReadyQueue.enqueue(_CurPCB);
+                TSOS.Control.hostQueues();
+                _CurPCB = _ReadyQueue.dequeue();
+                TSOS.Control.hostQueues();
+                TSOS.Control.hostPCB();
+                _CurPCB.restoreCpuState();
+                _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+            } else {
+                // do nothing in terms of context switch
+            }
+            this.krnTrace("Context Switch done");
             _CurSchedulerClock = 0;
         };
 

@@ -47,6 +47,10 @@ var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;
 var _CpuArea = null;
 var _MemoryArea = null;
+var _RunningPcbArea = null;
+var _ReadyQueueArea = null;
+var _ResidentQueueArea = null;
+var _TerminatedQueueArea = null;
 
 var _Trace = true;
 

@@ -105,9 +105,10 @@ module TSOS {
                 Control.hostQueues();
                 Control.hostMemory();
                 Control.hostCpu();
-                if(_CurSchedulerClock > _SchedulerClockLimit - 1 && _ReadyQueue.size() > 0 && _CurSchedulerMode <= 1 ){
+                if(_CurSchedulerClock > _SchedulerClockLimit - 2 && _ReadyQueue.getSize() > 0 && _CurSchedulerMode <= 1 ){
                     _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Scheduler dispatch: context switch"));
-                }else if(_ReadyQueue.size() > 0){
+                }
+                if(_ReadyQueue.getSize() > 0){
                     _CurSchedulerClock = (_CurSchedulerClock + 1) % _SchedulerClockLimit;
                 }else {
                     // do not run a scheduler clock tick; only one process is running
@@ -155,8 +156,7 @@ module TSOS {
                     Control.hostPCB();
                     _TerminatedQueue.enqueue(_CurPCB);
                     _MMU.blockReleased(_CurPCB.getBaseAddress());
-                    _CurPCB.init();
-                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ, "Check schedule for other processes."))
+                    _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ, "Check schedule for other processes."));
                     break;
                 case MEM_IRQ:
                     this.krnTrapErrorSysfault("Hardware memory fault detected. params=[" + params + "]");
@@ -173,14 +173,14 @@ module TSOS {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
             this.krnTrace("Context Switch in progress");
-            if(!_CPU.isExecuting && _ReadyQueue.length > 0) {
+            if(!_CPU.isExecuting && _ReadyQueue.getSize() > 0) {
                 _CurPCB = _ReadyQueue.dequeue();
                 Control.hostQueues();
                 Control.hostPCB();
                 _CurPCB.restoreCpuState();
                 _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
                 _CPU.isExecuting = true;
-            } else if(_ReadyQueue.length > 0) {
+            } else if(_ReadyQueue.getSize() > 0) {
                 _CurPCB.saveCpuState();
                 Control.hostPCB();
                 _ReadyQueue.enqueue(_CurPCB);

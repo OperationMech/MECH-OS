@@ -41,6 +41,10 @@ var TSOS;
             document.getElementById("taTime").textContent = "";
             _CpuArea = document.getElementById("taCpu");
             _MemoryArea = document.getElementById("taMemoryArea");
+            _RunningPcbArea = document.getElementById("divRunning");
+            _ReadyQueueArea = document.getElementById("divReadyQueue");
+            _ResidentQueueArea = document.getElementById("divResidentQueue");
+            _TerminatedQueueArea = document.getElementById("divTerminatedQueue");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -64,9 +68,29 @@ var TSOS;
         };
 
         Control.hostPCB = function () {
+            if (!_CPU.isExecuting) {
+                _RunningPcbArea.innerHTML = "";
+            } else {
+                _RunningPcbArea.innerHTML = _CurPCB.toString();
+            }
         };
 
         Control.hostQueues = function () {
+            var stringout = "";
+            for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                stringout = stringout + _ReadyQueue.q[i].toString() + "<br>";
+            }
+            _ReadyQueueArea.innerHTML = stringout;
+            stringout = "";
+            for (var i = 0; i < _ResidentQueue.getSize(); i++) {
+                stringout = stringout + _ResidentQueue.q[i].toString() + "<br>";
+            }
+            _ResidentQueueArea.innerHTML = stringout;
+            stringout = "";
+            for (var i = 0; i < _TerminatedQueue.getSize(); i++) {
+                stringout = stringout + _TerminatedQueue.q[i].toString() + "<br>";
+            }
+            _TerminatedQueueArea.innerHTML = stringout;
         };
 
         Control.hostMemory = function () {

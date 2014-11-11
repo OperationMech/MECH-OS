@@ -46,6 +46,10 @@ module TSOS {
             (<HTMLDivElement> document.getElementById("taTime")).textContent = "";
             _CpuArea = <HTMLTableElement>document.getElementById("taCpu");
             _MemoryArea = <HTMLDivElement>document.getElementById("taMemoryArea");
+            _RunningPcbArea = <HTMLDivElement>document.getElementById("divRunning");
+            _ReadyQueueArea = <HTMLDivElement>document.getElementById("divReadyQueue");
+            _ResidentQueueArea = <HTMLDivElement>document.getElementById("divResidentQueue");
+            _TerminatedQueueArea = <HTMLDivElement>document.getElementById("divTerminatedQueue");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -69,11 +73,29 @@ module TSOS {
         }
 
         public static hostPCB(): void {
-
+            if(!_CPU.isExecuting){
+                _RunningPcbArea.innerHTML = "";
+            } else {
+                _RunningPcbArea.innerHTML = _CurPCB.toString();
+            }
         }
 
         public static hostQueues(): void {
-
+            var stringout = "";
+            for(var i = 0; i < _ReadyQueue.getSize(); i++){
+                stringout = stringout + _ReadyQueue.q[i].toString() + "<br>";
+            }
+            _ReadyQueueArea.innerHTML = stringout;
+            stringout = "";
+            for(var i = 0; i < _ResidentQueue.getSize(); i++){
+                stringout = stringout + _ResidentQueue.q[i].toString() + "<br>";
+            }
+            _ResidentQueueArea.innerHTML = stringout;
+            stringout = "";
+            for(var i = 0; i < _TerminatedQueue.getSize(); i++){
+                stringout = stringout + _TerminatedQueue.q[i].toString() + "<br>";
+            }
+            _TerminatedQueueArea.innerHTML = stringout;
         }
 
         public static hostMemory(): void {
