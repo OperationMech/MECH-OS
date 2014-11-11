@@ -526,7 +526,7 @@ module TSOS {
                     _KernelInterruptQueue.enqueue(new Interrupt(CPU_IRQ,"Process terminated by user"));
                 } else if (_ReadyQueue > 0){
                     var localPCB;
-                    for(var i = 0; i < _ReadyQueue.getSize(); i++){
+                    while(0 < _ReadyQueue.getSize()) {
                         localPCB = _ReadyQueue.dequeue();
                         if(parseInt(args[0]) === localPCB.getPcbId()) {
                             _TerminatedQueue.enqueue(localPCB);
