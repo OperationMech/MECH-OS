@@ -13,7 +13,7 @@
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var APP_NAME: string    = "MECH-OS";   // A better name.
-var APP_VERSION: string = "0.32(007)"; // Changed this to reflect actual version.
+var APP_VERSION: string = "0.35(007)"; // Changed this to reflect actual version.
 
 var CPU_CLOCK_INTERVAL: number = 100;   // This is in ms, or milliseconds, so 1000 = 1 second.
 
