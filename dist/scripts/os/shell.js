@@ -99,7 +99,20 @@ var TSOS;
             this.commandNames[this.commandNames.length] = "run";
 
             // processes - list the running processes and their IDs
+            sc = new TSOS.ShellCommand(this.shellListProcesses, "ps", "- Lists all running processes and Kernel as pid 0.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "ps";
+
             // kill <id> - kills the specified process id.
+            sc = new TSOS.ShellCommand(this.shellKillProc, "kill", "- <pid> to kill the process with the specified pid.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "kill";
+
+            // clearmem - clears ram.
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all memory.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "clearmem";
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -433,6 +446,26 @@ var TSOS;
                 }
                 _StdOut.putText("No program to run at designated pid.");
             }
+        };
+
+        Shell.prototype.shellListProcesses = function (args) {
+            _StdOut.putText("PIDs running:");
+            _StdOut.putText("  0");
+            _StdOut.putText("  " + _CurPCB.getPcbId().toString());
+            for (var i = 0; i < _ReadyQueue.length; i++) {
+                _StdOut.putText("  " + _ReadyQueue.q[i].getPcbId().toString());
+            }
+        };
+
+        Shell.prototype.shellKillProc = function (args) {
+            if (args < 1) {
+                _StdOut.putText("Usage: kill <pid>.");
+            } else {
+            }
+        };
+
+        Shell.prototype.shellClearMem = function (args) {
+            _MMU.eraseMemory();
         };
         return Shell;
     })();
