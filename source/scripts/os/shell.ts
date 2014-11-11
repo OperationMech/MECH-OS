@@ -423,7 +423,6 @@ module TSOS {
             _CurPCB.init();
             _CurPCB.setPcbId(_PID);
             _MMU.blockStored();
-            _MMU.setBaseAddr();
             _MMU.eraseBlock();
             _CurPCB.setBaseAddress(_MMU.getBaseAddr());
             i = 0;

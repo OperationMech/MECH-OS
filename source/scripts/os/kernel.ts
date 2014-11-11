@@ -107,8 +107,10 @@ module TSOS {
                 Control.hostCpu();
                 if(_CurSchedulerClock > _SchedulerClockLimit - 1 && _ReadyQueue.size() > 0 && _CurSchedulerMode <= 1 ){
                     _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Scheduler dispatch: context switch"));
-                }else {
+                }else if(_ReadyQueue.size() > 0){
                     _CurSchedulerClock = (_CurSchedulerClock + 1) % _SchedulerClockLimit;
+                }else {
+                    // do not run a scheduler clock tick; only one process is running
                 }
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle.
                 this.krnTrace("Idle");
@@ -152,6 +154,7 @@ module TSOS {
                     this.krnTrapErrorSoftfalt("CPU error detected. irq=" + irq + " params=[" + params +"]");
                     Control.hostPCB();
                     _TerminatedQueue.enqueue(_CurPCB);
+                    _MMU.blockReleased(_CurPCB.getBaseAddress());
                     _CurPCB.init();
                     break;
                 case MEM_IRQ:
@@ -177,6 +180,7 @@ module TSOS {
             Control.hostQueues();
             Control.hostPCB();
             _CurPCB.restoreCpuState();
+            _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
             _CurSchedulerClock = 0;
         }
 
