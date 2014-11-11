@@ -413,7 +413,7 @@ var TSOS;
                 _StdOut.putText("No program.");
                 return;
             }
-            if (_loadedPrograms > 1) {
+            if (_loadedPrograms > 2) {
                 _StdOut.putText("Memory Full");
                 return;
             }
