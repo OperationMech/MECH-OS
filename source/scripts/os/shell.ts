@@ -479,7 +479,7 @@ module TSOS {
         public shellRun(args) {
             var localPCB = new Pcb;
             localPCB.init();
-            if(args.length > 0){
+            if(args.length < 1){
                 _StdOut.putText("Usage: run <pid | 'all'>.")
             } else {
                 if (args[0] === "all") {
@@ -519,7 +519,7 @@ module TSOS {
         }
 
         public shellKillProc(args) {
-            if(args.length > 0){
+            if(args.length < 1){
                 _StdOut.putText("Usage: kill <pid>.");
             } else {
                 if(_CurPCB.Id === parseInt(args[0])) {
