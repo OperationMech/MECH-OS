@@ -507,7 +507,7 @@ var TSOS;
         };
 
         Shell.prototype.shellQuantum = function (args) {
-            if (args < 1) {
+            if (args.length < 1) {
                 _SchedulerClockLimit = parseInt(args[0]);
             } else {
                 _StdOut.putText("Usage: quantum <int>.");
