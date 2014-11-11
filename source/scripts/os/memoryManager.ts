@@ -47,6 +47,7 @@ module TSOS {
             } else {
                 // call disk IRQ and create swap file
             }
+            _loadedPrograms = _loadedPrograms + 1;
         }
 
         public blockReleased(addr): void {
@@ -59,6 +60,7 @@ module TSOS {
             } else {
               // extra case?
             }
+            _loadedPrograms = _loadedPrograms - 1;
         }
 
         public valueOfAddress(): string {

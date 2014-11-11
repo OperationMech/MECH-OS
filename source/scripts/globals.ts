@@ -99,6 +99,9 @@ var _krnKeyboardDriver = null;
 
 var _hardwareClockID: number = null;
 
+// global loaded program count
+var _loadedPrograms = 0;
+
 // For testing...
 var _GLaDOS: any = null;
 var Glados: any = null;

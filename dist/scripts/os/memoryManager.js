@@ -48,6 +48,7 @@ var TSOS;
             } else {
                 // call disk IRQ and create swap file
             }
+            _loadedPrograms = _loadedPrograms + 1;
         };
 
         Mmu.prototype.blockReleased = function (addr) {
@@ -60,6 +61,7 @@ var TSOS;
             } else {
                 // extra case?
             }
+            _loadedPrograms = _loadedPrograms - 1;
         };
 
         Mmu.prototype.valueOfAddress = function () {

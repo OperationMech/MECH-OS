@@ -453,6 +453,10 @@ module TSOS {
                 _StdOut.putText("No program.");
                 return;
             }
+            if(_loadedPrograms > 1){
+                _StdOut.putText("Memory Full")
+                return;
+            }
             // Add valid program to memory here
             var localPCB = new Pcb;
             localPCB.init();
