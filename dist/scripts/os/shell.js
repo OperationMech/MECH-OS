@@ -464,6 +464,7 @@ var TSOS;
                         if (localPCB.Id === parseInt(args[0]) && !_CPU.isExecuting) {
                             localPCB.restoreCpuState();
                             _CurPCB = localPCB;
+                            _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
                             _CPU.isExecuting = true;
                             return;
                         } else if (localPCB.Id === parseInt(args[0]) && _CPU.isExecuting) {
