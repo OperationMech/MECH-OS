@@ -456,6 +456,7 @@ var TSOS;
                     }
                     _CurPCB = _ReadyQueue.dequeue();
                     _CurPCB.restoreCpuState();
+                    _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
                     _CPU.isExecuting = true;
                 } else {
                     for (var i = 0; i < _ResidentQueue.getSize(); i++) {
@@ -492,15 +493,18 @@ var TSOS;
             } else {
                 if (_CurPCB.Id === parseInt(args[0])) {
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CPU_IRQ, "Process terminated by user"));
-                } else if (_ReadyQueue > 0) {
+                } else if (_ReadyQueue.getSize() > 0) {
                     var localPCB;
-                    while (0 < _ReadyQueue.getSize()) {
-                        localPCB = _ReadyQueue.dequeue();
-                        if (parseInt(args[0]) === localPCB.getPcbId()) {
-                            _TerminatedQueue.enqueue(localPCB);
+                    var i = 0;
+                    while (i < _ReadyQueue.getSize()) {
+                        if (parseInt(args[0]) !== _ReadyQueue.q[i].getPcbId()) {
+                            _ReadyQueue.enqueue(_ReadyQueue.dequeue());
                         } else {
-                            _ReadyQueue.enqueue(localPCB);
+                            localPCB = _ReadyQueue.dequeue();
+                            _MMU.blockReleased(localPCB.getBaseAddress());
+                            _TerminatedQueue.enqueue(localPCB);
                         }
+                        i = i + 1;
                     }
                 } else {
                     _StdOut.putText("Pid: " + parseInt(args[0]) + " is not running.");

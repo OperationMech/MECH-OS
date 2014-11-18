@@ -495,6 +495,7 @@ module TSOS {
                     }
                     _CurPCB = _ReadyQueue.dequeue();
                     _CurPCB.restoreCpuState();
+                    _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
                     _CPU.isExecuting = true;
                 } else {
                     for (var i = 0; i < _ResidentQueue.getSize(); i++) {
@@ -518,7 +519,7 @@ module TSOS {
 
         public shellListProcesses(args) {
             _StdOut.putText("PIDs running:");
-            _StdOut.putText("  0")
+            _StdOut.putText("  0");
             _StdOut.putText("  " + _CurPCB.getPcbId().toString());
             for(var i = 0; i < _ReadyQueue.getSize(); i++){
                 _StdOut.putText("  " + _ReadyQueue.q[i].getPcbId().toString());
@@ -531,15 +532,18 @@ module TSOS {
             } else {
                 if(_CurPCB.Id === parseInt(args[0])) {
                     _KernelInterruptQueue.enqueue(new Interrupt(CPU_IRQ,"Process terminated by user"));
-                } else if (_ReadyQueue > 0){
-                    var localPCB;
-                    while(0 < _ReadyQueue.getSize()) {
-                        localPCB = _ReadyQueue.dequeue();
-                        if(parseInt(args[0]) === localPCB.getPcbId()) {
-                            _TerminatedQueue.enqueue(localPCB);
+                } else if (_ReadyQueue.getSize() > 0){
+                    var localPCB: TSOS.Pcb;
+                    var i = 0;
+                    while(i < _ReadyQueue.getSize()) {
+                        if(parseInt(args[0]) !== _ReadyQueue.q[i].getPcbId()) {
+                            _ReadyQueue.enqueue(_ReadyQueue.dequeue());
                         } else {
-                            _ReadyQueue.enqueue(localPCB);
+                            localPCB = _ReadyQueue.dequeue();
+                            _MMU.blockReleased(localPCB.getBaseAddress());
+                           _TerminatedQueue.enqueue(localPCB);
                         }
+                        i = i + 1;
                     }
                 } else {
                     _StdOut.putText("Pid: " + parseInt(args[0]) + " is not running.");
