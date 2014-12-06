@@ -34,6 +34,19 @@ module TSOS {
             return retVal;
         }
 
+        public prioritize() {
+            var localPCB = new Pcb();
+            for(var i = 0; i < this.q.length; i++) {
+                localPCB = this.q[i];
+                for(var j = 0; j < this.q.length; j++) {
+                    if(localPCB.Pr > this.q[j].Pr) {
+                        this.q[i] = this.q[j];
+                        this.q[j] = localPCB;
+                    }
+                }
+            }
+        }
+
         public toString() {
             var retVal = "";
             for (var i in this.q) {

@@ -428,6 +428,7 @@ module TSOS {
         public shellLoad(args) {
             var program = (<HTMLInputElement> document.getElementById("taProgramInput")).value;
             var valid = "";
+            var priority = 8;
             var i = 0;
             if(program.length > 0 ) {
                 while(i < program.length){
@@ -454,7 +455,7 @@ module TSOS {
                 return;
             }
             if(_loadedPrograms > 2){
-                _StdOut.putText("Memory Full")
+                _StdOut.putText("Memory Full");
                 return;
             }
             // Add valid program to memory here
@@ -473,7 +474,11 @@ module TSOS {
                 _MMU.storeToAddress(valid[i]+valid[j]);
                 i = i + 2;
             }
-            _StdOut.putText("PID: " + localPCB.getPcbId().toString());
+            if(args.length > 0){
+                priority = parseInt(args[0]);
+            }
+            localPCB.Pr = priority;
+            _StdOut.putText("PID: " + localPCB.getPcbId().toString() + " loaded");
             _ResidentQueue.enqueue(localPCB);
             Control.hostMemory();
             Control.hostQueues();
@@ -493,6 +498,9 @@ module TSOS {
                     if(_CPU.isExecuting){
                         return;
                     }
+                    if(_CurSchedulerMode === 2){
+                        _ReadyQueue.prioritize();
+                    }
                     _CurPCB = _ReadyQueue.dequeue();
                     _CurPCB.restoreCpuState();
                     _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
@@ -508,6 +516,9 @@ module TSOS {
                             return;
                         } else if(localPCB.Id === parseInt(args[0]) && _CPU.isExecuting) {
                             _ReadyQueue.enqueue(localPCB);
+                            if(_CurSchedulerMode === 2){
+                                _ReadyQueue.prioritize();
+                            }
                             return;
                         } else {
                             _ResidentQueue.enqueue(localPCB);
@@ -519,11 +530,20 @@ module TSOS {
         }
 
         public shellListProcesses(args) {
-            _StdOut.putText("PIDs running:");
-            _StdOut.putText("  0");
-            _StdOut.putText("  " + _CurPCB.getPcbId().toString());
+            _StdOut.putText("Processes running: isKernel   PID");
+            _StdOut.advanceLine();
+            _StdOut.putText("                       *       0");
+            if (_CurPCB.getPcbId() < 0){
+                // no printing only advance line
+                _StdOut.advanceLine();
+            } else {
+                _StdOut.advanceLine();
+                _StdOut.putText("                               " + _CurPCB.getPcbId().toString());
+                _StdOut.advanceLine();
+            }
             for(var i = 0; i < _ReadyQueue.getSize(); i++){
-                _StdOut.putText("  " + _ReadyQueue.q[i].getPcbId().toString());
+                _StdOut.putText("                               " + _ReadyQueue.q[i].getPcbId().toString());
+                _StdOut.advanceLine();
             }
         }
 
@@ -568,6 +588,65 @@ module TSOS {
             var localarr = [];
             localarr[0] = "all";
             _OsShell.shellRun(localarr);
+        }
+
+        public shellCreateFile(args) {
+
+        }
+
+        public shellReadFile(args) {
+
+        }
+
+        public shellWriteFile(args) {
+
+        }
+
+        public shellDeleteFile(args) {
+
+        }
+
+        public shellFormatDrive(args) {
+
+        }
+
+        public shellListDir(args) {
+
+        }
+
+        public shellSetScheduleAlg(args) {
+            if(args.length > 0){
+                switch(args[0]){
+                    case "rr":
+                        _CurSchedulerMode = 0;
+                        break;
+                    case "fcfs":
+                        _CurSchedulerMode = 1;
+                        break;
+                    case "priority":
+                        _CurSchedulerMode = 2;
+                        break;
+                    default:
+                        _StdOut.putText("Invalid argument. Usage: setschedule <rr|fcfs|priority>.");
+                        break;
+                }
+
+            } else {
+                _StdOut.putText("Usage: setschedule <rr|fcfs|priority>.");
+            }
+
+        }
+
+        public shellGetScheduleAlg(args) {
+            if(_CurSchedulerMode === 0) {
+                _StdOut.putText("Schedule: Round Robin");
+            } else if(_CurSchedulerMode === 1) {
+                _StdOut.putText("Schedule: First Come First Served");
+            } else if(_CurSchedulerMode === 2) {
+                _StdOut.putText("Schedule: Priority");
+            } else {
+                _StdOut.putText("Schedule: Something has gone horribly wrong!");
+            }
         }
     }
 }

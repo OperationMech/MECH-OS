@@ -105,7 +105,7 @@ module TSOS {
                 Control.hostQueues();
                 Control.hostMemory();
                 Control.hostCpu();
-                if(_CurSchedulerClock > _SchedulerClockLimit - 2 && _ReadyQueue.getSize() > 0 && _CurSchedulerMode <= 1 ){
+                if(_CurSchedulerClock > _SchedulerClockLimit - 2 && _ReadyQueue.getSize() > 0 && _CurSchedulerMode < 1 ){
                     _KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ,"Scheduler dispatch: context switch"));
                 }
                 if(_ReadyQueue.getSize() > 0){
@@ -194,6 +194,8 @@ module TSOS {
                 // do nothing in terms of context switch
             }
             this.krnTrace("Context Switch done");
+            Control.hostQueues();
+            Control.hostPCB();
             _CurSchedulerClock = 0;
         }
 
