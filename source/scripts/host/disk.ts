@@ -11,24 +11,43 @@ module TSOS {
 
     export class Disk {
 
-        constructor( private storage: WindowLocalStorage) {
+        constructor( private storage: WindowLocalStorage,
+                     public dirCache = "010",
+                     public datCache = "100",
+                     public dirBlocks = 56,
+                     public datBlocks = 192) {
 
+        }
+
+        public testDiskDevice(): string {
+            return "loaded";
         }
 
         public init () {
             this.storage.localStorage.clear();
         }
 
-        public addToDisk(tsb , data) {
-            this.storage.localStorage.setItem(tsb , data);
+        public addToDisk(tsb , data): boolean {
+            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 1) {
+                return false;
+            } else {
+                this.storage.localStorage.setItem(tsb , data);
+                return true;
+            }
+
         }
 
-        public removeFromDisk(tsb) {
-            this.storage.localStorage.removeItem(tsb);
+        public removeFromDisk(tsb):boolean {
+            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] < 1){
+                return false;
+            } else {
+                this.storage.localStorage.removeItem(tsb);
+                return true;
+            }
         }
 
-        public retrieveFromDisk(tsb){
-            this.storage.localStorage.getItem(tsb);
+        public retrieveFromDisk(tsb): string{
+            return this.storage.localStorage.getItem(tsb);
         }
 
         public toString(): string {

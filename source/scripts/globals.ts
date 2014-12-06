@@ -82,6 +82,9 @@ var _RamBlock = 0x100;
 var _MA: TSOS.MemAlloc;
 var _MMU: TSOS.Mmu;
 
+// DiskDrive
+var _DiskDrive: TSOS.Disk = null;
+
 // Scheduler
 var _CurSchedulerMode: number = 0;
 var _SchedulerClockLimit: number = 6;
@@ -96,6 +99,7 @@ var _SarcasticMode: boolean = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver = null;
+var _krnDiskDriver = null;
 
 var _hardwareClockID: number = null;
 

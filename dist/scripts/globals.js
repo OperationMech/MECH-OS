@@ -77,6 +77,9 @@ var _RamBlock = 0x100;
 var _MA;
 var _MMU;
 
+// DiskDrive
+var _DiskDrive = null;
+
 // Scheduler
 var _CurSchedulerMode = 0;
 var _SchedulerClockLimit = 6;
@@ -91,6 +94,7 @@ var _SarcasticMode = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver = null;
+var _krnDiskDriver = null;
 
 var _hardwareClockID = null;
 
