@@ -201,7 +201,7 @@ module TSOS {
 
             // format - clear the disk records  --- does not touch MBR
             sc = new ShellCommand(this.shellFormatDrive,
-                                  "write",
+                                  "format",
                                   "- formats the disk");
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "format";

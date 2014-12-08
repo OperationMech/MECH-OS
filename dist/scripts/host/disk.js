@@ -40,8 +40,11 @@ var TSOS;
         Disk.prototype.removeFromDisk = function (tsb) {
             if (this.storage.getItem(tsb).split(" ")[0][0] < 1) {
                 return false;
-            } else {
+            } else if (this.storage.getItem(tsb) === null) {
                 this.storage.setItem(tsb, "0- -- -");
+                return true;
+            } else {
+                _DiskDrive.deleteFromDisk(tsb);
                 return true;
             }
         };
@@ -58,7 +61,7 @@ var TSOS;
                 while (s < 7) {
                     var b = 0;
                     while (b < 7) {
-                        strOut = +strOut + t + s + b + " " + this.storage.getItem("" + t + s + b) + "\n";
+                        strOut = +strOut + t + s + b + " " + this.storage.getItem("" + t + s + b) + "<br>";
                         b = b + 1;
                     }
                     s = s + 1;

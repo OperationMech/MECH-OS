@@ -50,6 +50,7 @@ module TSOS {
             _ReadyQueueArea = <HTMLDivElement>document.getElementById("divReadyQueue");
             _ResidentQueueArea = <HTMLDivElement>document.getElementById("divResidentQueue");
             _TerminatedQueueArea = <HTMLDivElement>document.getElementById("divTerminatedQueue");
+            _DiskArea = <HTMLDivElement>document.getElementById("divDiskDisplay");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -144,6 +145,10 @@ module TSOS {
             _CpuArea.innerHTML = string_row1 + string_row2;
         }
 
+        public static hostDisk(): void {
+            _DiskArea.innerHTML = _DiskDrive.toString();
+        }
+
         public static hostLog(msg: string, source: string = "?"): void {
             // Note the OS CLOCK.
             var clock:number = _OSclock;
@@ -197,6 +202,8 @@ module TSOS {
             // ... Create and init the Disk (Hardware) ...
             _DiskDrive = new Disk();
             _DiskDrive.init();
+
+            this.hostDisk();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);

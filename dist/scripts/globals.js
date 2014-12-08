@@ -53,6 +53,7 @@ var _RunningPcbArea = null;
 var _ReadyQueueArea = null;
 var _ResidentQueueArea = null;
 var _TerminatedQueueArea = null;
+var _DiskArea = null;
 
 var _Trace = true;
 

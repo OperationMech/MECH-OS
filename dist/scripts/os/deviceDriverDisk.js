@@ -49,6 +49,8 @@ var TSOS;
                     _StdOut.putText("/");
                     _StdOut.advanceLine();
                     _StdOut.putText(this.ListFiles());
+                    _StdOut.advanceLine();
+                    _StdOut.putText(">");
                     break;
                 case "delete":
                     this.DeleteRecord(cmdNumber, filename);
@@ -60,6 +62,7 @@ var TSOS;
                     _Kernel.krnTrace("Disk command unrecognized");
                     break;
             }
+            TSOS.Control.hostDisk();
         };
 
         DeviceDriverDisk.prototype.CreateFile = function (cmdNum, filename) {

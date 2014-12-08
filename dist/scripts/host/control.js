@@ -45,6 +45,7 @@ var TSOS;
             _ReadyQueueArea = document.getElementById("divReadyQueue");
             _ResidentQueueArea = document.getElementById("divResidentQueue");
             _TerminatedQueueArea = document.getElementById("divTerminatedQueue");
+            _DiskArea = document.getElementById("divDiskDisplay");
 
             //Clear the program input.
             //Use TypeScript to cast HTMLInputElement.
@@ -126,6 +127,10 @@ var TSOS;
             _CpuArea.innerHTML = string_row1 + string_row2;
         };
 
+        Control.hostDisk = function () {
+            _DiskArea.innerHTML = _DiskDrive.toString();
+        };
+
         Control.hostLog = function (msg, source) {
             if (typeof source === "undefined") { source = "?"; }
             // Note the OS CLOCK.
@@ -178,6 +183,8 @@ var TSOS;
             // ... Create and init the Disk (Hardware) ...
             _DiskDrive = new TSOS.Disk();
             _DiskDrive.init();
+
+            this.hostDisk();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);

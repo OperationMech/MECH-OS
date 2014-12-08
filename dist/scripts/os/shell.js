@@ -144,7 +144,7 @@ var TSOS;
             this.commandNames[this.commandNames.length] = "delete";
 
             // format - clear the disk records  --- does not touch MBR
-            sc = new TSOS.ShellCommand(this.shellFormatDrive, "write", "- formats the disk");
+            sc = new TSOS.ShellCommand(this.shellFormatDrive, "format", "- formats the disk");
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "format";
 
