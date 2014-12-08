@@ -44,11 +44,11 @@ module TSOS {
         }
 
         public removeFromDisk(tsb):boolean {
-            if(this.storage.getItem(tsb).split(" ")[0][0] < 1){
-                return false;
-            } else if(this.storage.getItem(tsb) === null){
+            if(this.storage.getItem(tsb) === null){
                 this.storage.setItem(tsb, "0- -- -");
                 return true;
+            } else if(this.storage.getItem(tsb).split(" ")[0][0] < 1){
+                return false;
             } else {
                 _DiskDrive.deleteFromDisk(tsb);
                 return true;
@@ -61,14 +61,24 @@ module TSOS {
 
         public toString(): string {
             var strOut = "";
+            var tsb = "000";
             var t = 0;
-            while(t < 3) {
+            while(t < 4) {
                 var s = 0;
-                while(s < 7) {
+                while(s < 8) {
                     var b = 0;
-                    while(b < 7) {
-                        strOut = + strOut + t + s + b + " " +
-                                 this.storage.getItem(""+ t + s + b) + "<br>" ;
+                    while(b < 8) {
+                        if(t === 0 && s === 0 && b === 0){
+                            tsb = "000";
+                        }else if(t === 0 && s === 0){
+                            tsb = "00"+ b;
+                        }
+                        else if(t === 0){
+                            tsb = "0" + s + b;
+                        } else {
+                            tsb = ""+ t + s + b
+                        }
+                        strOut = strOut + tsb + " " + this.storage.getItem(tsb) + "<br>";
                         b = b + 1;
                     }
                     s = s + 1;

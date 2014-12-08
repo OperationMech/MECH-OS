@@ -57,6 +57,7 @@ var _RunningPcbArea: HTMLDivElement = null;
 var _ReadyQueueArea: HTMLDivElement = null;
 var _ResidentQueueArea: HTMLDivElement = null;
 var _TerminatedQueueArea: HTMLDivElement = null;
+var _DiskArea: HTMLDivElement = null;
 
 
 var _Trace: boolean = true;  // Default the OS trace to be on.

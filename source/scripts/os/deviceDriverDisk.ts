@@ -241,19 +241,31 @@ module TSOS {
             return true;
         }
 
-        private FormatDisk(): boolean {
-            var tsbSearch = "000";
-            while(tsbSearch != "377"){
-                _DiskDrive.removeFromDisk(tsbSearch);
-                if(((parseInt(tsbSearch,8) + 1) % 64) > 0  && ((parseInt(tsbSearch,8) + 1) % 8) > 0) {
-                    tsbSearch = (parseInt(tsbSearch, 8) + 1).toString(8);
-                } else if (((parseInt(tsbSearch,8) + 1) % 8) > 0){
-                    tsbSearch = "0" + (parseInt(tsbSearch, 8) + 1).toString(8);
-                } else {
-                  tsbSearch = "0" + "0" + (parseInt(tsbSearch, 8) + 1).toString(8);
+        private FormatDisk(): void {
+            var tsbSearch = "";
+            var t = 0;
+            while(t < 4){
+                var s = 0;
+                while(s < 8){
+                    var b = 0;
+                    while(b < 8) {
+                        if (t === 0 && s === 0 && b === 0) {
+                                tsbSearch = "000";
+                        } else if (t === 0 && s === 0) {
+                                tsbSearch = "00" + b;
+                        } else if (t === 0) {
+                                tsbSearch = "0" + s + b;
+                        } else {
+                                tsbSearch = "" + t + s + b;
+                        }
+                        _DiskDrive.removeFromDisk(tsbSearch);
+                    b = b + 1;
+                    }
+                s = s + 1;
                 }
+            t = t + 1;
             }
-            return true;
+
         }
 
         private ListFiles(): string {
