@@ -25,6 +25,8 @@ var MEM_IRQ = 3;
 
 var SW_IRQ = 4;
 
+var DISK_IRQ = 5;
+
 //
 // Global Variables
 //

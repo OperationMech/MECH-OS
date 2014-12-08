@@ -161,6 +161,9 @@ var TSOS;
                 case SW_IRQ:
                     this.krnSysCall(_CPU.Yreg, _CPU.Xreg);
                     break;
+                case DISK_IRQ:
+                    _krnDiskDriver.isr(params);
+                    break;
                 default:
                     this.krnTrapErrorSysfault("Invalid interrupt request. irq=" + irq + " params=[" + params + "]");
             }

@@ -28,7 +28,7 @@ module TSOS {
         }
 
         public addToDisk(tsb , data): boolean {
-            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 1) {
+            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 0) {
                 return false;
             } else {
                 this.storage.localStorage.setItem(tsb , data);
@@ -37,11 +37,17 @@ module TSOS {
 
         }
 
+        public deleteFromDisk(tsb) {
+            var replaceData = this.storage.localStorage.getItem(tsb);
+            replaceData[0] = "0";
+            this.storage.localStorage.setItem(tsb,replaceData);
+        }
+
         public removeFromDisk(tsb):boolean {
             if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] < 1){
                 return false;
             } else {
-                this.storage.localStorage.removeItem(tsb);
+                this.storage.localStorage.setItem(tsb, "0- -- -");
                 return true;
             }
         }
@@ -58,8 +64,8 @@ module TSOS {
                 while(s < 7) {
                     var b = 0;
                     while(b < 7) {
-                        strOut = t + s + b + " " +
-                                 this.storage.localStorage.getItem(""+ t + s + b) + "\n" + strOut;
+                        strOut = + strOut + t + s + b + " " +
+                                 this.storage.localStorage.getItem(""+ t + s + b) + "\n" ;
                         b = b + 1;
                     }
                     s = s + 1;

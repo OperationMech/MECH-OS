@@ -123,6 +123,46 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "runall";
 
+            // create - file create
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "<string> - Creates a file with the name <string> '._' is an invalid name.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "create";
+
+            // read - file read
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "<string> - Reads a file with the name <string>.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "read";
+
+            // create - file create
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "<string> - Writes data to the named file.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "write";
+
+            // delete - file delete
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "<string> - Deletes the named file.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "delete";
+
+            // format - clear the disk records  --- does not touch MBR
+            sc = new TSOS.ShellCommand(this.shellFormatDrive, "write", "- formats the disk");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "format";
+
+            // ls - list files command
+            sc = new TSOS.ShellCommand(this.shellListDir, "ls", "- lists files in the directory and will not show system files.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "write";
+
+            // setschedule - select the cpu scheduler
+            sc = new TSOS.ShellCommand(this.shellSetScheduleAlg, "setschedule", "- Sets the scheduling algorithm <rr|fcfs|priority>.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "setschedule";
+
+            // getschedule - returns the current scheduler
+            sc = new TSOS.ShellCommand(this.shellGetScheduleAlg, "getschedule", "- Shows the currently selected scheduling algorithm.");
+            this.commandList[this.commandList.length] = sc;
+            this.commandNames[this.commandNames.length] = "getschedule";
+
             // Display the initial prompt.
             this.putPrompt();
         };
@@ -552,21 +592,82 @@ var TSOS;
         };
 
         Shell.prototype.shellCreateFile = function (args) {
+            if (args.length > 0) {
+                if (args[0][0] === "." && args[0][1] === "_") {
+                    _StdOut.putText("Reserved for system files only.");
+                } else {
+                    var fname = "";
+                    for (var i = 0; i < 7; i++) {
+                        fname = fname + args[0][i].valueAsNumber().toString(16) + " ";
+                    }
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["create", 1, fname, ""]));
+                }
+            } else {
+                _StdOut.putText("Usage: create <filename>.");
+            }
         };
 
         Shell.prototype.shellReadFile = function (args) {
+            if (args.length > 0) {
+                if (args[0][0] === "." && args[0][1] === "_") {
+                    _StdOut.putText("Reserved for system files only.");
+                } else {
+                    var fname = "";
+                    for (var i = 0; i < args[0].length; i++) {
+                        fname = fname + args[0][i].valueAsNumber().toString(16) + " ";
+                    }
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["read", 1, fname, ""]));
+                }
+            } else {
+                _StdOut.putText("Usage: read <filename>.");
+            }
         };
 
         Shell.prototype.shellWriteFile = function (args) {
+            if (args[0][0] === "." && args[0][1] === "_") {
+                _StdOut.putText("Reserved for system files only.");
+            } else {
+                var fdata = "";
+                var fname = "";
+                for (var i = 0; i < args[0].length; i++) {
+                    fname = fname + args[0][i];
+                }
+                var j = 1;
+                while (j < args.length) {
+                    for (var k = 0; k < args[j].length; k++) {
+                        fdata = fdata + " " + args[j][k];
+                    }
+                }
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["write", 1, fname]));
+            }
         };
 
         Shell.prototype.shellDeleteFile = function (args) {
+            if (args.length > 0) {
+                if (args[0][0] === "." && args[0][1] === "_") {
+                    _StdOut.putText("Reserved for system files only.");
+                } else {
+                    var fname = "";
+                    for (var i = 0; i < args[0].length; i++) {
+                        fname = fname + args[0][i];
+                    }
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["delete", 1, fname, ""]));
+                }
+            } else {
+                _StdOut.putText("Usage: delete <filename>.");
+            }
         };
 
         Shell.prototype.shellFormatDrive = function (args) {
+            if (!_CPU.isExecuting) {
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["format", 1, "", ""]));
+            } else {
+                _StdOut.putText("Cannot format while the cpu is running.");
+            }
         };
 
         Shell.prototype.shellListDir = function (args) {
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["list", 1, "", ""]));
         };
 
         Shell.prototype.shellSetScheduleAlg = function (args) {

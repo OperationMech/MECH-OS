@@ -27,7 +27,7 @@ var TSOS;
         };
 
         Disk.prototype.addToDisk = function (tsb, data) {
-            if (this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 1) {
+            if (this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 0) {
                 return false;
             } else {
                 this.storage.localStorage.setItem(tsb, data);
@@ -35,11 +35,17 @@ var TSOS;
             }
         };
 
+        Disk.prototype.deleteFromDisk = function (tsb) {
+            var replaceData = this.storage.localStorage.getItem(tsb);
+            replaceData[0] = "0";
+            this.storage.localStorage.setItem(tsb, replaceData);
+        };
+
         Disk.prototype.removeFromDisk = function (tsb) {
             if (this.storage.localStorage.getItem(tsb).split(" ")[0][0] < 1) {
                 return false;
             } else {
-                this.storage.localStorage.removeItem(tsb);
+                this.storage.localStorage.setItem(tsb, "0- -- -");
                 return true;
             }
         };
@@ -56,7 +62,7 @@ var TSOS;
                 while (s < 7) {
                     var b = 0;
                     while (b < 7) {
-                        strOut = t + s + b + " " + this.storage.localStorage.getItem("" + t + s + b) + "\n" + strOut;
+                        strOut = +strOut + t + s + b + " " + this.storage.localStorage.getItem("" + t + s + b) + "\n";
                         b = b + 1;
                     }
                     s = s + 1;
