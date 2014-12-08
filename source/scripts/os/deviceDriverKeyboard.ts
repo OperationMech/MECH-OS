@@ -137,6 +137,8 @@ module TSOS {
                         chr = "↓";
                     }else if(keyCode == 222) {
                         chr = "'";
+                    }else if(keyCode == 173) {
+                        chr = '-';
                     }else if(keyCode == 188) {
                         chr = ',';
                     }else if(keyCode == 190) {
