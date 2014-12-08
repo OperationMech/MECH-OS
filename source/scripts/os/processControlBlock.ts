@@ -17,7 +17,8 @@ module TSOS{
       public Xreg: number = 0,
       public Yreg: number = 0,
       public Ireg: number = 0,
-      public Zflag: number = 0) {
+      public Zflag: number = 0,
+      public onDisk: number = 0) {
     }
 
     public init(): void {
@@ -30,6 +31,7 @@ module TSOS{
       this.Yreg = 0;
       this.Ireg = 0;
       this.Zflag = 0;
+      this.onDisk = 0;
     }
 
   public setPcbId(idNum): void {
@@ -59,10 +61,18 @@ module TSOS{
    }
 
    public getBaseAddress(): number {
-      return this.baseAddr;
+      if(this.onDisk){
+        return "._" + this.Id.toString(16);
+      } else {
+        return this.baseAddr;
+      }
    }
    public setBaseAddress(inBaseAddr): void {
-       this.baseAddr = inBaseAddr;
+       if(inBaseAddr < 0){
+         this.onDisk = 1;
+       } else {
+         this.baseAddr = inBaseAddr;
+       }
    }
 
     public toString(): string {
@@ -71,7 +81,7 @@ module TSOS{
         + " Acc: " + this.Acc.toString(16) + " Xreg: " + this.Xreg.toString(16)
         + " Yreg: " + this.Yreg.toString(16) + " IReg: " + this.Ireg.toString(16)
         + " Zflag: " + this.Zflag.toString(16) + " LimitAddr: "
-        + (this.baseAddr + _RamBlock -1).toString(16);
+        + (this.baseAddr + _RamBlock -1).toString(16) + "isOnDisk: " + this.onDisk.toString(16);
       return output;
     }
  }

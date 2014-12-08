@@ -511,8 +511,25 @@ module TSOS {
                 _StdOut.putText("No program.");
                 return;
             }
-            if(_loadedPrograms > 2){
-                _StdOut.putText("Memory Full");
+            if(_loadedPrograms > 2) {
+                var fname = '.'.charCodeAt(0).toString(16) + " " +
+                            '_'.charCodeAt(0).toString(16) + " " + _PID.toString(16);
+                i = valid.length-1;
+                var memValid = "";
+                while(i > 1) {
+                   memValid = valid[i] + valid[i-1] + " " + memValid;
+                }
+                _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["create",3,fname,memValid]));
+                _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["write",3,fname,memValid]));
+                var localPCB = new Pcb;
+                localPCB.init();
+                localPCB.setPcbId(_PID);
+                localPCB.setBaseAddress(-1);
+                _StdOut.putText("PID: " + localPCB.getPcbId().toString() + " loaded to disk");
+                _ResidentQueue.enqueue(localPCB);
+                Control.hostMemory();
+                Control.hostQueues();
+                _PID = _PID + 1;
                 return;
             }
             // Add valid program to memory here

@@ -45,7 +45,7 @@ module TSOS {
                 this.block2InUse = true;
                 this.baseAddr = 0x200;
             } else {
-                // call disk IRQ and create swap file
+                // not used
             }
             _loadedPrograms = _loadedPrograms + 1;
         }
@@ -58,7 +58,7 @@ module TSOS {
             } else if(addr === 0x200) {
                 this.block2InUse = false;
             } else {
-              // extra case?
+              // not used
             }
             _loadedPrograms = _loadedPrograms - 1;
         }
