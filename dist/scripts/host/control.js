@@ -175,6 +175,10 @@ var TSOS;
 
             this.hostMemory();
 
+            // ... Create and init the Disk (Hardware) ...
+            _DiskDrive = new TSOS.Disk();
+            _DiskDrive.init();
+
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
 

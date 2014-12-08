@@ -81,7 +81,7 @@ module TSOS{
         + " Acc: " + this.Acc.toString(16) + " Xreg: " + this.Xreg.toString(16)
         + " Yreg: " + this.Yreg.toString(16) + " IReg: " + this.Ireg.toString(16)
         + " Zflag: " + this.Zflag.toString(16) + " LimitAddr: "
-        + (this.baseAddr + _RamBlock -1).toString(16) + "isOnDisk: " + this.onDisk.toString(16);
+        + (this.baseAddr + _RamBlock -1).toString(16) + " isOnDisk: " + this.onDisk.toString(16);
       return output;
     }
  }

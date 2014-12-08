@@ -7,51 +7,47 @@ Host disk implementation.  Simulates a Physical Hard Drive.
 var TSOS;
 (function (TSOS) {
     var Disk = (function () {
-        function Disk(storage, dirCache, datCache, dirBlocks, datBlocks) {
-            if (typeof dirCache === "undefined") { dirCache = "010"; }
-            if (typeof datCache === "undefined") { datCache = "100"; }
-            if (typeof dirBlocks === "undefined") { dirBlocks = 56; }
-            if (typeof datBlocks === "undefined") { datBlocks = 192; }
-            this.storage = storage;
-            this.dirCache = dirCache;
-            this.datCache = datCache;
-            this.dirBlocks = dirBlocks;
-            this.datBlocks = datBlocks;
+        function Disk() {
+            this.storage = self.localStorage;
+            this.dirCache = "010";
+            this.datCache = "100";
+            this.dirBlocks = 56;
+            this.datBlocks = 192;
         }
         Disk.prototype.testDiskDevice = function () {
             return "loaded";
         };
 
         Disk.prototype.init = function () {
-            this.storage.localStorage.clear();
+            this.storage.clear();
         };
 
         Disk.prototype.addToDisk = function (tsb, data) {
-            if (this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 0) {
+            if (this.storage.getItem(tsb).split(" ")[0][0] > 0) {
                 return false;
             } else {
-                this.storage.localStorage.setItem(tsb, data);
+                this.storage.setItem(tsb, data);
                 return true;
             }
         };
 
         Disk.prototype.deleteFromDisk = function (tsb) {
-            var replaceData = this.storage.localStorage.getItem(tsb);
+            var replaceData = this.storage.getItem(tsb);
             replaceData[0] = "0";
-            this.storage.localStorage.setItem(tsb, replaceData);
+            this.storage.setItem(tsb, replaceData);
         };
 
         Disk.prototype.removeFromDisk = function (tsb) {
-            if (this.storage.localStorage.getItem(tsb).split(" ")[0][0] < 1) {
+            if (this.storage.getItem(tsb).split(" ")[0][0] < 1) {
                 return false;
             } else {
-                this.storage.localStorage.setItem(tsb, "0- -- -");
+                this.storage.setItem(tsb, "0- -- -");
                 return true;
             }
         };
 
         Disk.prototype.retrieveFromDisk = function (tsb) {
-            return this.storage.localStorage.getItem(tsb);
+            return this.storage.getItem(tsb);
         };
 
         Disk.prototype.toString = function () {
@@ -62,7 +58,7 @@ var TSOS;
                 while (s < 7) {
                     var b = 0;
                     while (b < 7) {
-                        strOut = +strOut + t + s + b + " " + this.storage.localStorage.getItem("" + t + s + b) + "\n";
+                        strOut = +strOut + t + s + b + " " + this.storage.getItem("" + t + s + b) + "\n";
                         b = b + 1;
                     }
                     s = s + 1;

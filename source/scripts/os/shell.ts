@@ -518,6 +518,7 @@ module TSOS {
                 var memValid = "";
                 while(i > 1) {
                    memValid = valid[i] + valid[i-1] + " " + memValid;
+                   i = i - 2;
                 }
                 _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["create",3,fname,memValid]));
                 _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["write",3,fname,memValid]));
@@ -607,7 +608,7 @@ module TSOS {
             _StdOut.putText("Processes running: isKernel   PID");
             _StdOut.advanceLine();
             _StdOut.putText("                       *       0");
-            if (_CurPCB.getPcbId() < 0){
+            if (!_CPU.isExecuting){
                 // no printing only advance line
                 _StdOut.advanceLine();
             } else {
@@ -625,6 +626,12 @@ module TSOS {
             if(args.length < 1){
                 _StdOut.putText("Usage: kill <pid>.");
             } else {
+                if(parseInt(args[0]) === 0){
+                    _StdOut.clearScreen();
+                    _StdOut.putText("--Kernel Halted--");
+                    Control.hostBtnHaltOS_click(document.getElementById("btnHaltOS"));
+                    return;
+                }
                 if(_CurPCB.Id === parseInt(args[0])) {
                     _KernelInterruptQueue.enqueue(new Interrupt(CPU_IRQ,"Process terminated by user"));
                 } else if (_ReadyQueue.getSize() > 0){
@@ -775,6 +782,9 @@ module TSOS {
                 _StdOut.putText("Schedule: First Come First Served");
             } else if(_CurSchedulerMode === 2) {
                 _StdOut.putText("Schedule: Priority");
+                if(_ReadyQueue.length > 0){
+                    _ReadyQueue.prioritize();
+                }
             } else {
                 _StdOut.putText("Schedule: Something has gone horribly wrong!");
             }

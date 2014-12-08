@@ -10,12 +10,12 @@
 module TSOS {
 
     export class Disk {
-
-        constructor( private storage: WindowLocalStorage,
-                     public dirCache = "010",
-                     public datCache = "100",
-                     public dirBlocks = 56,
-                     public datBlocks = 192) {
+        private storage = self.localStorage;
+        public dirCache = "010";
+        public datCache = "100";
+        public dirBlocks = 56;
+        public datBlocks = 192;
+        constructor() {
 
         }
 
@@ -24,36 +24,36 @@ module TSOS {
         }
 
         public init () {
-            this.storage.localStorage.clear();
+            this.storage.clear();
         }
 
         public addToDisk(tsb , data): boolean {
-            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] > 0) {
+            if(this.storage.getItem(tsb).split(" ")[0][0] > 0) {
                 return false;
             } else {
-                this.storage.localStorage.setItem(tsb , data);
+                this.storage.setItem(tsb , data);
                 return true;
             }
 
         }
 
         public deleteFromDisk(tsb) {
-            var replaceData = this.storage.localStorage.getItem(tsb);
+            var replaceData = this.storage.getItem(tsb);
             replaceData[0] = "0";
-            this.storage.localStorage.setItem(tsb,replaceData);
+            this.storage.setItem(tsb,replaceData);
         }
 
         public removeFromDisk(tsb):boolean {
-            if(this.storage.localStorage.getItem(tsb).split(" ")[0][0] < 1){
+            if(this.storage.getItem(tsb).split(" ")[0][0] < 1){
                 return false;
             } else {
-                this.storage.localStorage.setItem(tsb, "0- -- -");
+                this.storage.setItem(tsb, "0- -- -");
                 return true;
             }
         }
 
         public retrieveFromDisk(tsb): string{
-            return this.storage.localStorage.getItem(tsb);
+            return this.storage.getItem(tsb);
         }
 
         public toString(): string {
@@ -65,7 +65,7 @@ module TSOS {
                     var b = 0;
                     while(b < 7) {
                         strOut = + strOut + t + s + b + " " +
-                                 this.storage.localStorage.getItem(""+ t + s + b) + "\n" ;
+                                 this.storage.getItem(""+ t + s + b) + "\n" ;
                         b = b + 1;
                     }
                     s = s + 1;
