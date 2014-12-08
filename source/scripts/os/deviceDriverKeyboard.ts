@@ -137,6 +137,14 @@ module TSOS {
                         chr = "↓";
                     }else if(keyCode == 222) {
                         chr = "'";
+                    }else if(keyCode == 188) {
+                        chr = ',';
+                    }else if(keyCode == 190) {
+                        chr = ".";
+                    }else if(keyCode == 191) {
+                        chr = "/";
+                    }else if(keyCode == 192) {
+                        chr = "`";
                     } else {
                         chr = String.fromCharCode(keyCode);
                     }
