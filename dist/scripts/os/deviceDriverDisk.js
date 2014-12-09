@@ -58,6 +58,7 @@ var TSOS;
                     _StdOut.advanceLine();
                     _StdOut.putText(this.ListFiles());
                     _StdOut.advanceLine();
+                    _StdOut.putText(">");
                     break;
                 case "delete":
                     this.DeleteRecord(cmdNumber, filename);
@@ -273,6 +274,10 @@ var TSOS;
                 }
                 t = t + 1;
             }
+            _DiskDrive.datBlocks = 192;
+            _DiskDrive.dirBlocks = 56;
+            _DiskDrive.datCache = "010";
+            _DiskDrive.dirCache = "100";
             _DiskDrive.isFormatted = true;
         };
 

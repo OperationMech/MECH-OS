@@ -282,6 +282,10 @@ module TSOS {
                 }
             t = t + 1;
             }
+            _DiskDrive.datBlocks = 192;
+            _DiskDrive.dirBlocks = 56;
+            _DiskDrive.datCache = "010";
+            _DiskDrive.dirCache = "100";
             _DiskDrive.isFormatted = true;
 
         }

@@ -219,8 +219,8 @@ var TSOS;
                 data = _MMU.valueOfAddress() + " " + data;
                 i++;
             }
-            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["create", 3, fname, data]));
-            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["write", 3, fname, data]));
+            _krnDiskDriver.isr(["create", 3, fname, data]); // was forced to override these too slow otherwise
+            _krnDiskDriver.isr(["write", 3, fname, data]); // was forced to override these too slow otherwise
             _MMU.blockReleased(_CurPCB.getBaseAddress());
             _CurPCB.setBaseAddress(-1);
         };
@@ -232,8 +232,8 @@ var TSOS;
             var fname = _CurPCB.getBaseAddress();
             _MMU.blockStored();
             _CurPCB.setBaseAddress(_MMU.getBaseAddr());
-            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["rToMemory", 3, fname, ""]));
-            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["delete", 3, fname, ""]));
+            _krnDiskDriver.isr(["rToMemory", 3, fname, ""]); // was forced to override these too slow otherwise
+            _krnDiskDriver.isr(["delete", 3, fname, ""]); // was forced to override these too slow otherwise
         };
 
         //
