@@ -13,6 +13,7 @@ var TSOS;
             this.datCache = "100";
             this.dirBlocks = 56;
             this.datBlocks = 192;
+            this.isFormatted = false;
         }
         Disk.prototype.testDiskDevice = function () {
             return "loaded";
@@ -32,9 +33,8 @@ var TSOS;
         };
 
         Disk.prototype.deleteFromDisk = function (tsb) {
-            var replaceData = this.storage.getItem(tsb);
-            replaceData[0] = "0";
-            this.storage.setItem(tsb, replaceData);
+            this.storage.removeItem(tsb);
+            this.storage.setItem(tsb, "0- -- -");
         };
 
         Disk.prototype.removeFromDisk = function (tsb) {

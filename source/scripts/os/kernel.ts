@@ -181,6 +181,7 @@ module TSOS {
             this.krnTrace("Context Switch in progress");
             if(!_CPU.isExecuting && _ReadyQueue.getSize() > 0) {
                 _CurPCB = _ReadyQueue.dequeue();
+                _Kernel.krnSwapProcFromDisk();
                 Control.hostQueues();
                 Control.hostPCB();
                 _CurPCB.restoreCpuState();
@@ -189,9 +190,13 @@ module TSOS {
             } else if(_ReadyQueue.getSize() > 0) {
                 _CurPCB.saveCpuState();
                 Control.hostPCB();
+                if(_ReadyQueue.q[0].onDisk === 1){
+                    _Kernel.krnSwapProcToDisk();
+                }
                 _ReadyQueue.enqueue(_CurPCB);
                 Control.hostQueues();
                 _CurPCB = _ReadyQueue.dequeue();
+                _Kernel.krnSwapProcFromDisk();
                 Control.hostQueues();
                 Control.hostPCB();
                 _CurPCB.restoreCpuState();
@@ -203,6 +208,40 @@ module TSOS {
             Control.hostQueues();
             Control.hostPCB();
             _CurSchedulerClock = 0;
+        }
+
+        public krnSwapProcToDisk(){
+            if(!_DiskDrive.isFormatted){
+                _StdOut.putText("Disk is not formatted.");
+                return;
+            }
+            var fname = '.'.charCodeAt(0).toString(16) + " " +
+                '_'.charCodeAt(0).toString(16) + " " + _CurPCB.Id.toString(16);
+
+            var data = "";
+            _MMU.updateBaseAddr(_CurPCB.getBaseAddress());
+            var i = 0;
+            while(i < _RamBlock){
+                _MMU.moveToAddr(i);
+                data = _MMU.valueOfAddress() + " " + data;
+                i++;
+            }
+            _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["create",3,fname,data]));
+            _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["write",3,fname,data]));
+            _MMU.blockReleased(_CurPCB.getBaseAddress());
+            _CurPCB.setBaseAddress(-1);
+
+        }
+
+        public krnSwapProcFromDisk(){
+            if(_CurPCB.onDisk != 1){
+                return;
+            }
+            var fname = _CurPCB.getBaseAddress();
+            _MMU.blockStored();
+            _CurPCB.setBaseAddress(_MMU.getBaseAddr());
+            _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["rToMemory",3,fname,""]));
+            _KernelInterruptQueue.enqueue(new Interrupt(DISK_IRQ,["delete",3,fname,""]));
         }
 
         //

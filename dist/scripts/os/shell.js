@@ -89,7 +89,7 @@ var TSOS;
             this.commandNames[this.commandNames.length] = "forcepanic";
 
             // load
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads and validates the program input area.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "[int] - Loads and validates the program input area optional priority.");
             this.commandList[this.commandList.length] = sc;
             this.commandNames[this.commandNames.length] = "load";
 
@@ -455,6 +455,10 @@ var TSOS;
                 return;
             }
             if (_loadedPrograms > 2) {
+                if (!_DiskDrive.isFormatted) {
+                    _StdOut.putText("Disk is not formatted.");
+                    return;
+                }
                 var fname = '.'.charCodeAt(0).toString(16) + " " + '_'.charCodeAt(0).toString(16) + " " + _PID.toString(16);
                 i = valid.length - 1;
                 var memValid = "";
@@ -619,9 +623,13 @@ var TSOS;
                 if (args[0][0] === "." && args[0][1] === "_") {
                     _StdOut.putText("Reserved for system files only.");
                 } else {
+                    if (!_DiskDrive.isFormatted) {
+                        _StdOut.putText("Disk is not formatted.");
+                        return;
+                    }
                     var fname = "";
-                    for (var i = 0; i < 7; i++) {
-                        fname = fname + args[0][i].valueAsNumber().toString(16) + " ";
+                    for (var i = 0; i < args[0].length; i++) {
+                        fname = fname + args[0][i].charCodeAt(0).toString(16) + " ";
                     }
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["create", 1, fname, ""]));
                 }
@@ -635,9 +643,13 @@ var TSOS;
                 if (args[0][0] === "." && args[0][1] === "_") {
                     _StdOut.putText("Reserved for system files only.");
                 } else {
+                    if (!_DiskDrive.isFormatted) {
+                        _StdOut.putText("Disk is not formatted.");
+                        return;
+                    }
                     var fname = "";
                     for (var i = 0; i < args[0].length; i++) {
-                        fname = fname + args[0][i].valueAsNumber().toString(16) + " ";
+                        fname = fname + args[0][i].charCodeAt(0).toString(16) + " ";
                     }
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["read", 1, fname, ""]));
                 }
@@ -650,18 +662,24 @@ var TSOS;
             if (args[0][0] === "." && args[0][1] === "_") {
                 _StdOut.putText("Reserved for system files only.");
             } else {
+                if (!_DiskDrive.isFormatted) {
+                    _StdOut.putText("Disk is not formatted.");
+                    return;
+                }
                 var fdata = "";
                 var fname = "";
                 for (var i = 0; i < args[0].length; i++) {
-                    fname = fname + args[0][i];
+                    fname = fname + args[0][i].charCodeAt(0).toString(16) + " ";
                 }
                 var j = 1;
                 while (j < args.length) {
                     for (var k = 0; k < args[j].length; k++) {
-                        fdata = fdata + " " + args[j][k];
+                        fdata = fdata + args[j][k];
                     }
+                    fdata = fdata + " ";
+                    j = j + 1;
                 }
-                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["write", 1, fname]));
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["write", 1, fname, fdata]));
             }
         };
 
@@ -672,7 +690,7 @@ var TSOS;
                 } else {
                     var fname = "";
                     for (var i = 0; i < args[0].length; i++) {
-                        fname = fname + args[0][i];
+                        fname = fname + args[0][i].charCodeAt(0).toString(16) + " ";
                     }
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_IRQ, ["delete", 1, fname, ""]));
                 }

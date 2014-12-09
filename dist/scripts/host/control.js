@@ -128,7 +128,11 @@ var TSOS;
         };
 
         Control.hostDisk = function () {
-            _DiskArea.innerHTML = _DiskDrive.toString();
+            if (_DiskDrive.isFormatted) {
+                _DiskArea.innerHTML = _DiskDrive.toString();
+            } else {
+                _DiskArea.innerHTML = "Disk is not formatted.";
+            }
         };
 
         Control.hostLog = function (msg, source) {

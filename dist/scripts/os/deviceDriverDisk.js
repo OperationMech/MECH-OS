@@ -33,15 +33,23 @@ var TSOS;
             switch (cmdToExecute) {
                 case "read":
                     _StdOut.putText(this.ReadFromDisk(filename));
+                    _StdOut.advanceLine();
                     break;
                 case "create":
                     _StdOut.putText("File created: " + this.CreateFile(cmdNumber, filename).toString());
+                    _StdOut.advanceLine();
+                    _StdOut.putText(">");
+                    TSOS.Control.hostDisk();
                     break;
                 case "write":
                     _StdOut.putText("File written: " + this.WriteToDisk(cmdNumber, data, filename).toString());
+                    _StdOut.advanceLine();
+                    _StdOut.putText(">");
+                    TSOS.Control.hostDisk();
                     break;
                 case "rToMemory":
                     this.ReadToMemory(filename);
+                    TSOS.Control.hostDisk();
                     break;
                 case "list":
                     _StdOut.putText("Files on disk:");
@@ -50,19 +58,19 @@ var TSOS;
                     _StdOut.advanceLine();
                     _StdOut.putText(this.ListFiles());
                     _StdOut.advanceLine();
-                    _StdOut.putText(">");
                     break;
                 case "delete":
                     this.DeleteRecord(cmdNumber, filename);
+                    TSOS.Control.hostDisk();
                     break;
                 case "format":
                     this.FormatDisk();
+                    TSOS.Control.hostDisk();
                     break;
                 default:
                     _Kernel.krnTrace("Disk command unrecognized");
                     break;
             }
-            TSOS.Control.hostDisk();
         };
 
         DeviceDriverDisk.prototype.CreateFile = function (cmdNum, filename) {
@@ -83,8 +91,8 @@ var TSOS;
             for (var i = 56; i > _DiskDrive.dirBlocks; i--) {
                 var Hold = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                 var localName = "";
-                for (var j = Hold.length - 2; j > 1; j--) {
-                    localName = Hold[j] + localName;
+                for (var j = Hold.length - 3; j > 1; j--) {
+                    localName = Hold[j] + " " + localName;
                 }
                 if (localName === filename) {
                     var localTSB = parseInt(Hold[0][1] + Hold[1], 8).toString(8);
@@ -92,31 +100,39 @@ var TSOS;
                         var i = 0;
                         var numDatBlocks = (data.length / 62);
                         while (i < numDatBlocks) {
-                            var localDatCache = localTSB;
+                            _DiskDrive.datBlocks = _DiskDrive.datBlocks - 1;
+                            var localDatCache = _DiskDrive.datCache;
+                            _DiskDrive.datCache = (parseInt(_DiskDrive.datCache, 8) + 1).toString(8);
                             var localData = "";
                             var j = i * 62;
                             while (j < i * 62 + 61) {
-                                if (j < data.length && cmdNum === 1) {
-                                    localData = localData + data[j].valueAsNumber().toString(16) + " ";
-                                    j = j + 1;
+                                if (cmdNum === 1) {
+                                    if (j < data.length) {
+                                        localData = localData + data[j].charCodeAt(0).toString(16) + " ";
+                                        j = j + 1;
+                                    } else {
+                                        localData = localData + " -";
+                                        j = i * 62 + 61;
+                                    }
                                 } else {
-                                    localData = localData + data[j].valueAsNumber().toString(16) + " -";
-                                    j = i * 62 + 61;
-                                }
-                                if (j < data.length && cmdNum === 3) {
-                                    localData = localData + data[j] + " ";
-                                    j = j + 1;
-                                } else {
-                                    localData = localData + data[j] + " -";
-                                    j = i * 62 + 61;
+                                    if (j < data.length) {
+                                        localData = localData + data[j] + " ";
+                                        j = j + 1;
+                                    } else {
+                                        localData = localData + " -";
+                                        j = i * 62 + 61;
+                                    }
                                 }
                             }
-                            localData = cmdNum.toString(16) + localTSB[0] + " " + localTSB[1] + localTSB[2] + " " + localData;
-                            _DiskDrive.addToDisk(localDatCache, localData);
-                            _DiskDrive.datBlocks = _DiskDrive.datBlocks - 1;
-                            localTSB = _DiskDrive.datCache;
-                            _DiskDrive.datCache = (parseInt(_DiskDrive.datCache, 8) + 1).toString(8);
                             i = i + 1;
+                            if (i > numDatBlocks) {
+                                localData = cmdNum.toString(16) + "-" + " " + "-" + "-" + " " + localData;
+                                _DiskDrive.addToDisk(localTSB, localData);
+                            } else {
+                                localData = cmdNum.toString(16) + localDatCache[0] + " " + localDatCache[1] + localDatCache[2] + " " + localData;
+                                _DiskDrive.addToDisk(localTSB, localData);
+                                localTSB = localDatCache;
+                            }
                         }
                     } else {
                         return false;
@@ -131,16 +147,16 @@ var TSOS;
             for (var i = 56; i > _DiskDrive.dirBlocks; i--) {
                 var Hold = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                 var localName = "";
-                for (var j = Hold.length - 2; j > 1; j--) {
-                    localName = Hold[j] + localName;
+                for (var j = Hold.length - 3; j > 1; j--) {
+                    localName = Hold[j] + " " + localName;
                 }
                 if (localName === filename && "3" === Hold[0][0]) {
                     tsbSearch = parseInt(Hold[0][1] + Hold[1], 8).toString(8);
                     var data1 = [];
                     data1[0] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                     while (data1[data1.length - 1][0][1] != "-") {
-                        data1[data1.length] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                         tsbSearch = parseInt(data1[data1.length - 1][0][1] + data1[data1.length - 1][1], 8).toString(8);
+                        data1[data1.length] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                     }
                     var j = data1.length - 1;
                     var Hold2 = [];
@@ -166,25 +182,26 @@ var TSOS;
             for (var i = 56; i > _DiskDrive.dirBlocks; i--) {
                 var Hold = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                 var localName = "";
-                for (var j = Hold.length - 2; j > 1; j--) {
-                    localName = Hold[j].charCodeAt(0) + localName;
+                for (var j = Hold.length - 3; j > 1; j--) {
+                    localName = Hold[j] + " " + localName;
                 }
                 if (localName === filename) {
                     tsbSearch = parseInt(Hold[0][1] + Hold[1], 8).toString(8);
                     var data1 = [];
                     data1[0] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                     while (data1[data1.length - 1][0][1] != "-") {
-                        data1[data1.length] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                         tsbSearch = parseInt(data1[data1.length - 1][0][1] + data1[data1.length - 1][1], 8).toString(8);
+                        data1[data1.length] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                     }
                     var j = data1.length - 1;
                     while (j > -1) {
-                        for (var k = data1[j].length; k > 1; k--)
+                        for (var k = data1[j].length - 2; k > 1; k--)
                             if (data1[j][k].charAt(0) === "-") {
                                 // exclude but check for file end.
                             } else {
-                                buffer = buffer + data1[j][k].charAt(0);
+                                buffer = String.fromCharCode(parseInt(data1[j][k], 16)) + buffer;
                             }
+                        j = j - 1;
                     }
                 } else {
                     tsbSearch = "0" + (parseInt(tsbSearch, 8) + 1).toString(8);
@@ -199,18 +216,18 @@ var TSOS;
             for (var i = 56; i > _DiskDrive.dirBlocks; i--) {
                 var Hold = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                 var localName = "";
-                for (var j = Hold.length - 2; j > 1; j--) {
-                    localName = Hold[j] + localName;
+                for (var j = Hold.length - 3; j > 1; j--) {
+                    localName = Hold[j] + " " + localName;
                 }
                 if (localName === filename && cmdNum.toString(16) === Hold[0][0]) {
                     var localTSB = parseInt(Hold[0][1] + Hold[1], 8).toString(8);
                     var data1 = [];
                     data1[0] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
                     while (data1[data1.length - 1][0][1] != "-") {
-                        data1[data1.length] = _DiskDrive.retrieveFromDisk(tsbSearch).split(" ");
-                        tsbSearch = parseInt(data1[data1.length - 1][0][0] + data1[data1.length - 1][1], 8).toString(8);
+                        localTSB = parseInt(data1[data1.length - 1][0][1] + data1[data1.length - 1][1], 8).toString(8);
+                        data1[data1.length] = _DiskDrive.retrieveFromDisk(localTSB).split(" ");
                     }
-                    var j = data1.length - 1;
+                    var j = data1.length - 2;
                     while (j > 0) {
                         localTSB = data1[j][0][1] + data1[j][1];
                         _DiskDrive.deleteFromDisk(localTSB);
@@ -222,7 +239,7 @@ var TSOS;
                     _DiskDrive.datBlocks = _DiskDrive.datBlocks + 1;
                     _DiskDrive.datCache = localTSB;
                 } else {
-                    tsbSearch = (parseInt(tsbSearch, 8) + 1).toString(8);
+                    tsbSearch = "0" + (parseInt(tsbSearch, 8) + 1).toString(8);
                 }
             }
             _DiskDrive.deleteFromDisk(tsbSearch);
@@ -256,6 +273,7 @@ var TSOS;
                 }
                 t = t + 1;
             }
+            _DiskDrive.isFormatted = true;
         };
 
         DeviceDriverDisk.prototype.ListFiles = function () {
@@ -271,7 +289,7 @@ var TSOS;
                         if (localDirBlock[j].charAt(0) === "-") {
                             strOut = " " + strOut;
                         }
-                        strOut = localDirBlock[j].charAt(0) + strOut;
+                        strOut = String.fromCharCode(parseInt(localDirBlock[j], 16)) + strOut;
                     }
                 }
                 tsbSearch = "0" + (parseInt(tsbSearch, 8) + 1).toString(8);

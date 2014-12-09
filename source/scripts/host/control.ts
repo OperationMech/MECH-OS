@@ -146,7 +146,11 @@ module TSOS {
         }
 
         public static hostDisk(): void {
-            _DiskArea.innerHTML = _DiskDrive.toString();
+            if(_DiskDrive.isFormatted){
+              _DiskArea.innerHTML = _DiskDrive.toString();
+            } else {
+              _DiskArea.innerHTML = "Disk is not formatted.";
+            }
         }
 
         public static hostLog(msg: string, source: string = "?"): void {

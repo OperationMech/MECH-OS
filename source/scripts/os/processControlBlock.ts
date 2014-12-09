@@ -60,9 +60,9 @@ module TSOS{
        _CPU.Zflag = this.Zflag;
    }
 
-   public getBaseAddress(): number {
+   public getBaseAddress():any {
       if(this.onDisk){
-        return "._" + this.Id.toString(16);
+        return ". _ " + this.Id.toString(16);
       } else {
         return this.baseAddr;
       }

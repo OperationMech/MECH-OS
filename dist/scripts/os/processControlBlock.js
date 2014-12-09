@@ -70,7 +70,7 @@ var TSOS;
 
         Pcb.prototype.getBaseAddress = function () {
             if (this.onDisk) {
-                return "._" + this.Id.toString(16);
+                return ". _ " + this.Id.toString(16);
             } else {
                 return this.baseAddr;
             }

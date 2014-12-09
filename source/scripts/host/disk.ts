@@ -15,6 +15,7 @@ module TSOS {
         public datCache = "100";
         public dirBlocks = 56;
         public datBlocks = 192;
+        public isFormatted = false;
         constructor() {
 
         }
@@ -38,9 +39,8 @@ module TSOS {
         }
 
         public deleteFromDisk(tsb) {
-            var replaceData = this.storage.getItem(tsb);
-            replaceData[0] = "0";
-            this.storage.setItem(tsb,replaceData);
+            this.storage.removeItem(tsb);
+            this.storage.setItem(tsb,"0- -- -");
         }
 
         public removeFromDisk(tsb):boolean {
