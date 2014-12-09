@@ -57,6 +57,7 @@ module TSOS {
                     _StdOut.advanceLine();
                     _StdOut.putText(this.ListFiles());
                     _StdOut.advanceLine();
+                    _StdOut.putText(">");
                     break;
                 case "delete":
                     this.DeleteRecord(cmdNumber, filename);
